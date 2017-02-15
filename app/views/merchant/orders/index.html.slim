@@ -1,0 +1,86 @@
+
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span  Store Order History
+    .row
+      .col-sm-3
+        =render :partial => "merchant/shared/seller"
+      .col-sm-9
+        = render partial: "merchant/shared/order_header", locals: {order: nil}
+        #seller-search.input-group
+          = form_tag '', :method => 'get', id: "seller-search-box" do 
+            input id="seller-search-input" class="form-control" autocomplete="off" name="q[search]" placeholder="Search for..." value=(params[:q][:search] rescue "")
+            button.button-search type="submit" 
+              i.fa.fa-search
+        br 
+        br    
+        .form-section
+          table.table.table-striped
+            thead
+              tr
+                th= sort_link @search, :number, "Order Number"
+                th= sort_link @search, :completed_at, "Ordered on"
+                th Item Name
+                th Variants
+                th Quantity
+                th= sort_link @search, :total, "Amount"
+                th Delivery Type
+                th Driver Name
+                th Actions
+            tbody
+              - unless @orders.blank?
+                - @orders.each do |order|
+                  - if order.completed?
+                    - line_item_ids = order.get_home_delivery_line_item_ids(@store.id)
+                    tr
+                      td.align-middle rowspan="#{order.get_store_line_items(@store.id).count}"
+                        / = link_to order.try(:number), edit_merchant_order_path(order)
+                        - if order.get_store_delivered_line_items(@store.id).count == line_item_ids.count
+                         = link_to order.try(:number), merchant_order_customer_return_items_path(order), title: "Return Order"
+                        - else
+                          = order.try(:number)
+                      td rowspan="#{order.get_store_line_items(@store.id).count}"
+                        = order.completed_at.strftime("%d-%m-%Y")
+                      - order.get_store_line_items(@store.id).each_with_index do |line_item, index|
+                        - if index == 0
+                          td= line_item.product.try(:name)
+                          td= line_item.variant.options_text
+                          td= line_item.quantity
+                          td= line_item.price.to_f
+                          td= line_item.delivery_type.try(:humanize)
+                          td= line_item.driver.try(:full_name) || "-"
+                          td.align-middle rowspan="#{order.get_store_line_items(@store.id).count}"
+                            - if line_item_ids.present? && order.state != "canceled"
+                              - if order.items_state(line_item_ids) == "packaging"
+                                = link_to "In process", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "ready_to_pick"), class: "btn btn-success", method: :put
+                              - elsif order.items_state(line_item_ids) == "ready_to_pick"
+                                = link_to "Ready For Pick Up", "#", class: "btn btn-success"
+                                / = link_to "Cancel", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "packaging"), class: "btn btn-default", method: :put, style: "margin-top: 5px;"
+                              - elsif order.items_state(line_item_ids) == "confirmed_pickup"
+                                = link_to "Waiting For Driver", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "out_for_delivery"), class: "btn btn-success", method: :put
+                              - elsif order.items_state(line_item_ids) == "out_for_delivery"
+                                = link_to "Out For Delivery", "#", class: "btn btn-success", disabled: true
+                              - else
+                                = link_to "Delivered", "#", class: "btn btn-success", disabled: true
+                            -elsif order.state == "canceled"
+                              = link_to "Canceled", "#", class: "btn btn-danger"
+                        - else
+                          tr
+                            td= line_item.product.try(:name)
+                            td= line_item.variant.options_text
+                            td= line_item.quantity
+                            td= line_item.price.to_f
+                            td= line_item.delivery_type.try(:humanize)
+                            td= line_item.driver.try(:full_name) || "-"
+              - else
+                tr
+                  td colspan="7"
+                    span No orders found.
+        - if @orders.respond_to?(:num_pages)
+          = paginate @orders

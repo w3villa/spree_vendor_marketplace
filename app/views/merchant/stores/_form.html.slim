@@ -1,0 +1,102 @@
+= form_for(@store, html: {class: "form-horizontal form-body"}) do |f|
+  = hidden_field_tag :token, params[:token]
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :name, "Store Name", class: "control-label"
+      span.required *
+    .col-md-4.col-xs-12
+      span.input-icon.icon-right
+        = f.text_field :name, required: true, class: "form-control input-bg" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :logo, class: "control-label"
+    .col-md-4.col-xs-12
+      span
+        = f.file_field :logo, class: "form-control" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :certificate_of_authority,  class: "control-label"
+      span.required *
+    .col-md-4.col-xs-12
+      span
+        = f.file_field :certificate, required: true, class: "form-control" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :manager_name, class: "control-label"
+      span.required *
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.text_field :manager_first_name, class: "form-control input-bg", placeholder: "First Name" 
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.text_field :manager_last_name, class: "form-control input-bg", placeholder: "Last Name" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :phone_number, class: "control-label"
+      span.required *
+    .col-md-4.col-xs-12
+      span.input-icon.icon-right
+        = f.number_field :phone_number, required: true, class: "form-control input-bg numbersOnly"
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :store_type, class: "control-label"
+    .col-md-4.col-xs-12
+      = f.select :store_type , options_for_select([['Physical', 'Physical' ],['Online', 'Online' ],['Both', 'Both' ]], @store.store_type), {}, class: "form-control input-bg"
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :estimated_delivery_time, class: "control-label"
+    .col-md-4.col-xs-12
+      = f.text_field :estimated_delivery_time, class: "form-control input-bg", placeholder: "Enter full information like 2 - 5 business hours or 1 -3 working days"
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :site_url, "Website(s)", class: "control-label"
+    .col-md-4.col-xs-12
+      span.input-icon.icon-right
+        = f.text_field :site_url, class: "form-control input-bg", placeholder: "www.example.com" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :street_number, "Address", class: "control-label"
+      span.required *
+    .col-md-8.col-xs-12
+      span.input-icon.icon-right
+        = f.text_field :street_number, required: true, class: "form-control input-bg", placeholder: "Street Address" 
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :street_number, " ".html_safe, class: "control-label"
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.text_field :city, class: "form-control input-bg", placeholder: "City"
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.text_field :state, class: "form-control input-bg charOnly", placeholder: "State"
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.number_field :zipcode, class: "form-control input-bg numbersOnly", placeholder: "Zipcode"
+    .col-md-2.col-xs-6
+      span.input-icon.icon-right
+        = f.text_field :country, class: "form-control input-bg charOnly", placeholder: "Country"
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :categories, class: "control-label" 
+      span.required *
+    .col-md-10.col-xs-12
+      - store_taxon_ids = @store.store_taxons.collect(&:taxon_id)
+      - @taxons.each do |taxon|
+        .col-md-2.col-xs-6
+          label.checkbox-inline title="#{taxon.name}" 
+            = check_box_tag "merchant_store[spree_taxon_ids][]", taxon.id, store_taxon_ids.include?(taxon.id)
+            = truncate(taxon.name, length: 22)
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label :description, class: "control-label"
+    .col-md-8.col-xs-12
+      span.input-icon.icon-right
+        = f.text_area :description, class: "form-control input-bg", placeholder: "Few lines about your store...", rows: 5 
+  
+  .form-group
+    .col-xs-offset-2.col-xs-10
+      button.btn.btn-primary type="submit"
+        i.fa class=(@store.new_record? ? 'fa-check' : 'fa-referesh')
+        |  
+        = @store.new_record? ? "Create" : "Update" 
+      = link_to "<span class='fa fa-close'></span> Cancel".html_safe, main_app.merchant_path, class: "btn btn-default margin-left"

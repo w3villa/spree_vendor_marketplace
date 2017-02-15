@@ -1,0 +1,27 @@
+- url = spree.product_url(product, :taxon_id => @taxon.try(:id))
+.col-md-3.product-item id= "product_#{product.id}"
+  .thumbnail.store-product-item
+    .thumb-image-container.product-img style="margin: 0 auto;"
+      -if @is_owner
+        a.aligner.img-center href=edit_merchant_product_path(product.slug)
+          = product_image(product, :itemprop => "image",:class=>"product-img-height")
+      -else
+        a.aligner.img-center href=spree.product_path(product)
+          = product_image(product, :itemprop => "image",:class=>"product-img-height")
+    .product-details
+      = link_to truncate(product.name, :length => 20), spree.product_path(product), :class => 'product-title', :itemprop => "name", :title => product.name, "data-no-turbolink" => true
+      .price
+        = number_to_currency(product.price)
+      .buy-now
+        - if @is_owner
+          = link_to "Edit", edit_merchant_product_path(product.slug), class: "btn btn-default btn-lg", "data-no-turbolink" => true
+        - elsif current_spree_user && current_spree_user.has_spree_role?("admin")
+          = link_to "Edit as admin", spree.edit_admin_product_path(product), class: "btn btn-default", "data-no-turbolink" => true
+        - else
+          = form_for :order, url: spree.populate_orders_path do |f|
+            input type= 'hidden' name= 'quantity' value= 1
+            input type= 'hidden' name= 'variant_id' value= product.order_variants.first.try(:id)
+            - if product.total_on_hand > 0
+              = submit_tag "Add To Cart", class: "btn btn-default btn-info", :type => :submit
+            - else
+               = submit_tag "Out of Stock", class: "btn btn-default btn-info", :type => :submit , :disabled => :true

@@ -1,0 +1,31 @@
+.panel.panel-default
+  .panel-heading
+    h1.panel-title
+      = Spree.t(:add_stock)
+  .panel-body
+    = form_for [:admin, Spree::StockMovement.new], url: spree.admin_stock_items_path do |f|
+      .row data-hook="admin_stock_movements_form_fields" 
+        .col-md-4
+          .form-group
+            = f.field_container :quantity do
+              = f.label :quantity, Spree.t(:quantity), class: "control-label"
+              = f.number_field :quantity, class: 'form-control', value: 1
+        .col-md-4
+          .form-group
+            = f.field_container :stock_location do
+              = label_tag :stock_location_id, Spree.t(:stock_location), class: "control-label"
+              = select_tag 'stock_location_id', options_from_collection_for_select(@stock_locations, :id, :name), 
+                class: 'select2 select2-offscreen merchant-select'                                                                                  
+        .col-md-4
+          .form-group
+            = f.field_container :variant_id do
+              = label_tag 'variant_id', Spree.t(:variant), class: "control-label"
+              = select_tag 'variant_id', options_from_collection_for_select(@variants, :id, :sku_and_options_text), 
+                class: 'select2 select2-offscreen merchant-select'
+      -if @product.variants.blank?
+        = hidden_field_tag "variant_id", @product.master.id        
+      .form-actions.text-center data-hook="buttons" 
+        / = button Spree.t(:add_stock), 'plus'
+        button.btn.btn-primary type="submit"
+          span.fa.fa-plus
+          |  Add Stock

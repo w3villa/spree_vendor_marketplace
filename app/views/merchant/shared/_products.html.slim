@@ -1,0 +1,14 @@
+- if products.any?
+  .row#products
+    = render partial: "merchant/shared/item", collection: @products, as: :product
+    - reset_cycle("classes")
+- else
+  - if @is_owner
+    - if products.empty? 
+      b No Product Found
+    - elsif products.empty? && (@store.active && current_spree_user.has_spree_role?("merchant"))
+      b You have not uploaded any product(s). Add your products.
+    - elsif products.empty? && (!@store.active || !current_spree_user.has_spree_role?("merchant"))
+      b We are reviewing your application and will let you know within 24 - 48 hours.
+    - else
+      b No product listed for this store.

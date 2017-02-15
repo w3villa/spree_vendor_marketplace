@@ -1,0 +1,13 @@
+#container	
+	.container
+		ul.breadcrumb
+			li
+				a href="/" 
+					i.fa.fa-home
+					| Home
+			li
+			span  Product Stock
+		.row
+			.col-md-12
+				.form-section
+					= render template: "merchant/products/bs_stock" 

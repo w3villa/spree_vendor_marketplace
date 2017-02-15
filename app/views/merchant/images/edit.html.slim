@@ -1,0 +1,25 @@
+.container.margin-top
+  ul.breadcrumb
+    li
+      a href="/" 
+        i.fa.fa-home
+        | Home
+    li
+      span  Edit Product Image
+  = render partial: 'spree/admin/shared/error_messages', locals: { target: @image }
+  = form_for [:merchant, @product, @image], html: { multipart: true } do |f|
+    .panel.panel-default[data-hook="edit_image"]
+      .panel-heading
+        h1.panel-title
+          = @image.attachment_file_name
+      .panel-body
+        .form-group
+          .col-md-3.text-center.margin-top[data-hook="thumbnail"]
+            = link_to image_tag(@image.attachment.url(:small)), @image.attachment.url(:product)
+          .col-md-9
+            = render partial: 'form', locals: { f: f }
+          .form-actions[data-hook="buttons"]
+            .pull-right
+              = button Spree.t('actions.update'), 'save'
+            span
+            = button_link_to Spree.t('actions.cancel'), spree.admin_product_images_url(@product), id: 'cancel_link', icon: 'delete'

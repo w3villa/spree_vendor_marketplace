@@ -1,0 +1,61 @@
+= form_for [:merchant, @product, @variant], html: {} do |f|
+  = render :partial => 'spree/shared/error_messages', :locals => { :target => @variant }
+  = f.hidden_field :product_id, value: @product.id
+  .row.top-margin-row
+    .col-md-6
+      .form-content-left
+        - @product.option_types.each do |option_type|
+          .form-group
+            = f.label option_type.presentation, class: "control-label"
+            = select_tag "variant[option_value_ids][]", options_for_select(Spree::OptionValue.where(option_type_id: option_type.id).collect {|s| [s.presentation, s.id]}, option_type.presentation), class: "select2 fullwidth form-control input-bg auto-select"
+        .form-group
+          = f.label :sku, class: "control-label"
+          span.input-icon.icon-right
+            = f.text_field :sku, class: "form-control input-bg"
+            i.fa &#xf02a;
+        .form-group
+          = f.label :Sale_Price, class: "control-label"
+          span.input-icon.icon-right
+            = f.text_field :price, class: "form-control input-bg", :required => "", value: @product.price
+            i.fa &#xf0d6;
+        .form-group
+          = f.label :Retail_Price, class: "control-label"
+          span.input-icon.icon-right
+           = f.number_field :cost_price, class: "numbersOnly form-control input-bg", :required => "", :min => @product.price, :step => "0.01"
+           i.fa &#xf0d6;
+        .form-group
+          = f.label :tax_category_id, class: "control-label"
+          span.input-icon.icon-right
+            = f.collection_select(:tax_category_id, Spree::TaxCategory.all, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2 fullwidth form-control input-bg auto-select' })
+    .col-md-6
+      .form-content-right
+        .form-group
+          = f.label :weight, class: "control-label"
+          span.input-icon.icon-right
+           = f.number_field :weight, class: "numbersOnly form-control input-bg"
+           i.fa &#xf24e;
+        .form-group
+          = f.label :height, class: "control-label"
+          span.input-icon.icon-right
+            = f.number_field :height, class: "numbersOnly form-control input-bg"
+            i.fa &#xf07d;
+        .form-group
+          = f.label :width, class: "control-label"
+          span.input-icon.icon-right
+            = f.number_field :width, class: "numbersOnly form-control input-bg"
+            i.fa &#xf07e;
+        .form-group
+          = f.label :depth, class: "control-label"
+          span.input-icon.icon-right
+            = f.number_field :depth, class: "form-control input-bg numbersOnly"
+            i.fa &#xf01c;
+    .col-md-12.top-margin-row
+      .col-md-6.update-btn
+        button.btn.btn-primary type="submit"
+          i.fa.fa-check
+          |  
+          = "#{@variant.new_record? ? 'Create' : 'Update'}" 
+      .col-md-6
+        = link_to merchant_stores_products_variants_path(product_id: @product.slug), class: "btn btn-default" do 
+          i.fa.fa-remove
+          |  Cancel

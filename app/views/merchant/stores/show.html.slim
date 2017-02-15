@@ -1,0 +1,48 @@
+#container
+  .container
+    ul.breadcrumb
+        li
+          a href="/" 
+            i.fa.fa-home
+            | Home
+        li 
+          a href=merchant_path
+            | Merchant
+
+        li 
+          a href=new_merchant_store_path
+            | Store
+        li
+          span 
+            = @store.name
+    .row
+      .col-sm-3
+        = render :partial => "merchant/shared/seller"
+              / = link_to "Contact Seller", new_message_path(to_user_id: @store.store_spree_users.first.spree_user_id), class: "store-link"
+      .col-sm-9
+        br
+        #seller-search.input-group
+          = form_tag '', :method => 'get', id: "seller-search-box" do 
+            input id="seller-search-input" class="form-control" autocomplete="off" name="q[search]" placeholder="Search for..." value=(params[:q][:search] rescue "")
+            button.button-search type="submit" 
+              i.fa.fa-search
+        br 
+        br       
+        h2 Store Product
+        = render partial: "merchant/shared/products", locals: {products: @products}
+        hr
+
+      .col-sm-6.text-left
+      .col-sm-6
+        - if @products.respond_to?(:num_pages)
+          = paginate @products
+
+- content_for :js do
+  javascript:
+    $(document).ready(function(){ 
+      var store = "#{@store.is_located?}" == "true" ? true : false; 
+      if(!store){
+        $("#add-location").trigger("click");
+      }
+    });
+

@@ -1,0 +1,38 @@
+.container
+  .row
+    .col-sm-3
+      =render :partial => "merchant/shared/seller"
+    .col-sm-9
+      = render partial: "merchant/shared/order_header", locals: {order: "Order"}
+      .form-section
+        - unless @orders.blank?
+          - @orders.each do |order|
+            - line_item_ids = []
+            .order-container
+              ul
+                li.order-number-container
+                  = order.number
+              - order.line_items.each_with_index do |line_item, index|
+                - if line_item.delivery_type == "home_delivery"
+                  - line_item_ids.push(line_item.id)
+                - if current_spree_user.stores.first.spree_products.include?(line_item.product)
+                  li.product-name= line_item.product.try(:name)
+                  li.variant-text= line_item.variant.options_text
+                  li.qty= line_item.quantity
+                  li.price= number_to_currency(line_item.price.to_f)
+                  li.delivery-type= line_item.delivery_type.try(:humanize)
+                  li.driver-name= line_item.driver.try(:full_name) || "-"
+              li
+                - if order.items_state(line_item_ids) == "packaging"
+                  = link_to "Ready to pickup", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "ready_to_pick"), class: "btn btn-success", method: :put
+                - elsif order.items_state(line_item_ids) == "ready_to_pick" || order.items_state(line_item_ids) == "in_cart"
+                  = link_to "Cancel", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "packaging"), class: "btn btn-default", method: :put
+                - elsif order.items_state(line_item_ids) == "confirmed_pickup"
+                  = link_to "Out For Delivery", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "out_for_delivery"), class: "btn btn-info", method: :put
+                - elsif order.items_state(line_item_ids) == "out_for_delivery"
+                  = link_to "Waiting to deliver", "#", class: "btn btn-success", disabled: true
+                - else
+                  = link_to "Delivered", "#", class: "btn btn-success", disabled: true
+        - else
+          .col-md-12
+              span No orders found.

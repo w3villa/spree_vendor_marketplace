@@ -1,0 +1,48 @@
+.container
+  = render partial: "merchant/shared/order_header", locals: {order: @order}
+  .row
+    .col-md-12
+      .form-section
+        .col-md-9
+          .row.top-margin-row
+            legend.center-text Item Details
+            .side-space
+              table.table.table-bordered.table-striped
+                thead
+                  tr
+                    th colspan="2" Item Description
+                    th Price
+                    th Quantity
+                    th Total
+                tbody
+                  - unless @order.line_items.blank?
+                    - @order.get_store_line_items(@store.id).each do |line_item|
+                      tr
+                        td= image_tag line_item.product.try(:images).try(:first).try(:attachment).try(:url, :mini)
+                        td= line_item.product.try(:name)
+                        td= number_to_currency(line_item.price.to_f)
+                        td= line_item.quantity
+                        td= number_to_currency(line_item.quantity * line_item.price.to_f)
+                  - else
+                    tr
+                      td colspan="6"
+                        span No Line Item Found.
+          .row.top-margin-row
+            legend.center-text Order Adjustment
+            .side-space
+              table.table.table-bordered
+                thead
+                  tr
+                    th Name
+                    th Amount
+                tbody
+                  tr
+                    td Paypal Adjustments: 
+                    td $0.00
+          .row.top-margin-row
+            .container-fluid
+              legend.center-text Order Total
+              .final-bill
+                span= number_to_currency(@order.total)
+        .col-md-3
+          = render partial: "merchant/shared/edit_order_sidebar", locals: {order: @order, store: @store}

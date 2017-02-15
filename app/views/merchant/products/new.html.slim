@@ -1,0 +1,103 @@
+#container
+  .container 
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span Add Product 
+    .row  
+      .col-sm-3
+        =render :partial => "merchant/shared/seller"
+      .col-sm-9
+        = render partial: "merchant/shared/product_header", locals: {text: "New Product ", product_name: @product.name}
+        .row
+          .form-section
+            .col-md-12
+              = form_for [:merchant, @product], :html => { :multipart => true } do |f|
+                = render :partial => '/spree/shared/error_messages', :locals => { :target => @product }
+                .top-margin-row
+                  .form-group
+                    = f.field_container :name do
+                      = f.label :name, Spree.t(:name) + " *"
+                      span.input-icon.icon-right
+                        = f.text_field :name, :class => 'form-control input-bg' 
+                      = f.error_message_on :name
+
+                    .row data-hook="new_product_attrs" 
+                      - unless @product.has_variants?
+                        .form-group.col-md-6
+                          = f.field_container :sku do
+                            = f.label :sku, Spree.t(:sku), class: "control-label lable-margin-top"
+                            span.input-icon.icon-right
+                              = f.text_field :sku, :size => 16, :class => 'form-control input-bg', readonly: true
+                            = f.error_message_on :sku
+
+                        .form-group.col-md-6.hide
+                          = f.field_container :prototype do
+                            = f.label :prototype_id, Spree.t(:prototype)
+                            = f.collection_select( :prototype_id, Spree::Prototype.all, :id, :name, {:include_blank => true}, {:class => 'select2 form-control'})
+
+                        .form-group.col-md-6
+                          = f.field_container :price do
+                            = f.label :price, Spree.t(:master_price) + " (USD) *", class: "control-label lable-margin-top"
+                            span.input-icon.icon-right
+                              = f.number_field :price, :value => number_to_currency(@product.price, :unit => ''), :class => 'form-control input-bg'
+                            = f.error_message_on :price
+
+                        .form-group.col-md-6
+                          = f.field_container :available_on do
+                            = f.label :available_on, Spree.t(:available_on), class: "control-label lable-margin-top"
+                            span.input-icon.icon-right
+                              = f.text_field :available_on, :class => 'datepicker form-control input-bg'
+                            = f.error_message_on :available_on
+                        .form-group.col-md-6
+                          = f.field_container :shipping_category do
+                            = f.label :shipping_category_id, Spree.t(:shipping_categories) + " *", class: "control-label lable-margin-top"
+                            = f.collection_select(:shipping_category_id, @shipping_categories, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2 fullwidth form-control auto-select' })
+                            = f.error_message_on :shipping_category_id 
+                      .clearfix[data-hook= "product-from-prototype" id="product-from-prototype"]
+                        = render :file => 'spree/admin/prototypes/show' if @prototype
+                      .col-xs-12.form-group
+                        .pull-right
+                          button.btn.btn-primary type="submit"
+                            span.fa.fa-save
+                            |&nbsp; Save
+                        = link_to merchant_products_path, class: "btn btn-default" do 
+                          span.fa.fa-arrow-left
+                          |&nbsp; Cancel
+            .col-sm-6
+              h3 OR
+              br
+              label Bulk Upload
+              br
+              = form_tag bulk_upload_merchant_products_path, method: :post, multipart: true do 
+                .form-group
+                  = file_field_tag :file, class: "form-control"
+                .form-group
+                  = submit_tag "Import", class: "btn btn-primary"
+                  span
+                    = link_to sample_csv_merchant_products_path, class: "margin-left" do
+                      span.fa.fa-download
+                      |  Sample CSV
+
+- content_for :js do
+  javascript:
+    (function($){
+      var base_url = "= admin_prototypes_url ";
+      var prototype_select = $('#product_prototype_id');
+      prototype_select.change(function() {
+        var id = prototype_select.val();
+        if (id.length) {
+          var url = new Uri(base_url);
+          url.setPath(url.path() + '/' + id);
+          $('#product-from-prototype').load(url.toString());
+        } else {
+          $('#product-from-prototype').empty();
+        }
+      });
+      if (prototype_select.html() == "") {
+        prototype_select.change();
+      }
+    });(jQuery); 

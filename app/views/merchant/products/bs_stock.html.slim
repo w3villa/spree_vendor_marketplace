@@ -1,0 +1,55 @@
+
+= link_to  edit_merchant_product_path(@product), class: "btn btn-primary margin-left", "data-no-turbolink" => true do 
+  span.fa.fa-arrow-left
+  | &nbsp; BACK TO PRODUCT EDIT
+= render :partial => 'spree/shared/error_messages', :locals => { :target => @product }
+.col-md-9
+  = render 'add_stock_form' , :locals => {:target => @product }
+  table#listing_product_stock.index.table.table-bordered.table-striped
+    colgroup
+      col style= "width: 25%"
+      col style= "width: 25%"
+      col style= "width: 25%"
+      col style= "width: 25%"
+    thead
+      tr data-hook= "admin_product_stock_management_index_headers"
+        th= Spree.t(:variant)
+        th colspan= "4"= Spree.t(:stock_location_info)
+    tbody
+      - unless @variants.blank?
+        - @variants.each do |variant|
+          - if variant.stock_items.present?
+            tr class= "#{cycle('odd', 'even')}" data-hook= "admin_product_stock_management_index_rows" id= "#{spree_dom_id variant}"
+              td.align-center
+                = variant.sku_and_options_text
+                br
+                - if variant.images.present?
+                  = image_tag variant.images.first.attachment.url(:mini)
+                br
+              td.stock_location_info colspan= "4"
+                table.table
+                  colgroup
+                    col style= "width: 45%"
+                    col style= "width: 20%"
+                    col style= "width: 20%"
+                    col style= "width: 15%"
+                  thead
+                    th= Spree.t(:stock_location)
+                    th= Spree.t(:count_on_hand)
+                    th= Spree.t(:backorderable)
+                    th.actions
+                  tbody
+                    - variant.stock_items.each do |item|
+                      - next unless @stock_locations.include?(item.stock_location)
+                      tr id= "stock-item-#{item.id}"
+                        td.align-center= item.stock_location.name
+                        td.align-center= item.count_on_hand
+                        td.align-center
+                          = form_tag spree.admin_stock_item_path(item), method: :patch, class: 'toggle_stock_item_backorderable' do
+                            = check_box_tag 'stock_item[backorderable]', true,item.backorderable?,class: 'stock_item_backorderable',id: "stock_item_backorderable_#{item.stock_location.id}" 
+              - reset_cycle("stock_locations")
+      / - else
+      /   tr
+      /     td colspan="4" No variants found, you need to add variants first
+.col-md-3
+  = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}

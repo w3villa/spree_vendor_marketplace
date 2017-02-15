@@ -1,0 +1,10 @@
+tr.product_property.fields data-hook="product_property" id="spree_#{dom_id(product_property)}" 
+  - if product_property.persisted?
+    = hidden_field_tag "product[product_properties_attributes][][id]", product_property.id
+  td.property_name
+    = text_field_tag "product[product_properties_attributes][][property_name]", product_property.property_name, class: 'autocomplete form-control'
+  td.value
+    = text_field_tag "product[product_properties_attributes][][value]", product_property.value, class: 'form-control'
+  td.actions.actions-1
+    - if product_property.persisted?
+       / = link_to merchant_product_property_path, no_text: true

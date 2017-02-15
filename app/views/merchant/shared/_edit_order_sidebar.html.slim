@@ -1,0 +1,38 @@
+legend.center-text.menu-side Order Information
+.edit-sidebar
+  ul.side-ul
+    li.order-info.first-content
+      .col-md-6.left-content State: 
+      .col-md-6.right-content
+        span.fa class= "state-#{order.completed? ? "complete" : "incomplete"}" &#xf111;
+        span.state-block= order.state || "-"
+    li.order-info
+      .col-md-6.left-content Sub Total: 
+      .col-md-6.right-content= number_to_currency(order.payment_total) || "-"
+    li.order-info
+      .col-md-6.left-content Total:
+      .col-md-6.right-content= number_to_currency(order.total) || "-"
+    li.order-info
+      .col-md-6.left-content Shipment:
+      .col-md-6.right-content
+        span.fa class= "state-#{order.shipment_state == "completed" ? "complete" : "incomplete"}" &#xf111;
+        .state-block= order.shipment_state || "Pending"
+    li.order-info
+      .col-md-6.left-content Payment:
+      .col-md-6.right-content
+        span.fa class= "state-#{order.payment_state == "paid" ? "complete" : "incomplete"}" &#xf111;
+        .state-block= order.payment_state || "Not Paid"
+    li.order-info.last-content
+      .col-md-6.left-content Date Completed:
+      .col-md-6.right-content= order.completed_at || "-"
+  ul.side-ul
+    li.side-menu.menu-first class= active_nav("order_details")
+      = link_to "Order Details", edit_merchant_order_path(order.number), class: "crip-text"
+    li.side-menu class= active_nav("customer_details")
+      = link_to "Customer Details", merchant_order_customer_path(order.number), class: "crip-text"
+    li.side-menu class= active_nav("adjustments")
+      = link_to "Adjustments", merchant_order_adjustments_path(order.number), class: "crip-text"
+    li.side-menu class= active_nav("payments")
+      = link_to "Payments", merchant_order_payments_path(order.number), class: "crip-text"
+    li.side-menu class= active_nav("return_authorizations")
+      = link_to "Return Authorizations", merchant_order_returns_path(order.number), class: "crip-text"

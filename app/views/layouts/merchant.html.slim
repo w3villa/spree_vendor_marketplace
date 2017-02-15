@@ -1,0 +1,66 @@
+doctype html
+html lang="#{I18n.locale}" 
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type" 
+    meta charset="utf-8" 
+    meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible" 
+    meta content="width=device-width, initial-scale=1.0" name="viewport" 
+    meta content="#{yield(:meta_description)}" name="description" 
+    meta content="#{yield(:meta_keywords)}" name="keywords" 
+    title= content_for?(:title) ? yield(:title) : "Pyklocal"
+    = csrf_meta_tags
+    = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => false
+    link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" 
+    link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" 
+    = stylesheet_link_tag "merchant_section", media: "all", "data-turbolinks-track" => false
+    = yield :css
+    = yield :head
+  body class=("with-footer #{body_class}") data-hook="body" id=("#{@body_id || 'default'}") 
+    = render partial: "spree/shared/header"
+    #main-body.container-fluid
+      - if false
+        .col-md-3.col-sm-12.mobile-taxonomy-div
+          = yield :sidebar
+      .page-content
+        = yield :page_actions
+        = render partial: 'merchant/shared/table_filter'
+        = yield
+        = yield :templates
+    = render partial: "spree/shared/footer"
+    = javascript_include_tag 'spree/backend/all', media: "all", "data-turbolinks-track" => false
+    
+    script type="text/javascript"
+      | var noty_option = 
+      = flash_message.to_json.html_safe
+      |;
+    = javascript_include_tag 'merchant', media: 'all', "data-turbolinks-track" => false
+    = javascript_include_tag 'custom', media: 'all', "data-turbolinks-track" => false
+    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.3.8/packaged/jquery.noty.packaged.min.js"
+    = yield :js
+    = render "spree/admin/shared/translations"
+    - if Rails.env == "production"
+      javascript:
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-52341750-2', 'auto');
+        ga('send', 'pageview');
+      /! Facebook Conversion Code for CoinClub
+      / javascript:
+      /   (function() {
+      /     var _fbq = window._fbq || (window._fbq = []);
+      /     if (!_fbq.loaded) {
+      /     var fbds = document.createElement('script');
+      /     fbds.async = true;
+      /     fbds.src = '//connect.facebook.net/en_US/fbds.js';
+      /     var s = document.getElementsByTagName('script')[0];
+      /     s.parentNode.insertBefore(fbds, s);
+      /     _fbq.loaded = true;
+      /     }
+      /     })();
+      /     window._fbq = window._fbq || [];
+      /     window._fbq.push(['track', '6017226589260', {'value':'0.01','currency':'USD'}]);
+      / noscript
+      /   img alt="" height="1" src="https://www.facebook.com/tr?ev=6017226589260&cd[value]=0.01&cd[currency]=USD&noscript=1" style="display:none" width="1" 

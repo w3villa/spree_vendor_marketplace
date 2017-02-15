@@ -1,0 +1,30 @@
+
+.container
+  = render partial: "merchant/shared/order_header", locals: {order: @order}
+  .row
+    .col-md-12
+      .form-section
+        .col-md-9
+          .row.top-margin-row
+            .side-space
+              table.table.table-striped.table-bordered
+                thead
+                  tr
+                    th DATE/TIME
+                    th AMOUNT
+                    th PAYMENT METHOD
+                    th PAYMENT STATE
+                tbody
+                  - unless @payments.blank?
+                    - @payments.each do |payment|
+                      tr
+                        td= link_to payment.created_at.try(:to_time), ""
+                        td= number_to_currency(payment.amount)
+                        td= payment.payment_method.try(:name)
+                        td= payment.state.try(:titleize)
+                  - else
+                    tr
+                      td colspan= "5"
+                        span No payment detail found.
+        .col-md-3
+          = render partial: "merchant/shared/edit_order_sidebar", locals: {order: @order} 

@@ -1,0 +1,60 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span  Update Product Properties
+    .row
+      .form-section
+        - content_for :page_actions do
+          .container.text-right.margin-top
+            = button_link_to("<span class='fa fa-plus'></span> Add Product Properties".html_safe, "javascript:;", {:'data-target' => "tbody#product_properties", class: 'btn-success spree_add_fields' })
+            span.js-new-ptype-link
+              = button_link_to "<span class='fa fa-tag'></span> Select From Prototype".html_safe, spree.available_admin_prototypes_url, { remote: true, 'data-update' => 'prototypes', class: 'btn-default margin-left' }
+            span
+              = link_to  edit_merchant_product_path(@product), class: "btn btn-primary margin-left", "data-no-turbolink" => true do 
+                span.fa.fa-arrow-left
+                | &nbsp; BACK TO PRODUCT EDIT
+                
+              end
+        .col-md-9.top-margin-row
+          = form_for [:merchant, @product], html: {} do |f|
+            #prototypes data-hook="" 
+            table.table.table-striped
+              thead
+                tr
+                  th PROPERTY
+                  th VALUE
+                  th ACTION
+              tbody#product_properties
+                - unless @product_properties.blank?
+                  - @product_properties.each do |product_property|
+                    = render partial: "product_property_fields", locals: {product_property: product_property}
+                - else
+                  = render partial: "product_property_fields", locals: {product_property: @product.product_properties.new}
+            button.btn.btn-primary type="submit"
+              span.fa.fa-refresh
+              |  Update
+            = hidden_field_tag "redirect_path", merchant_product_product_properties_path(@product)
+            = link_to merchant_product_product_properties_path(@product.slug), class: "btn btn-default margin-left" do 
+              span.fa.fa-close
+              |  Cancel 
+        .col-md-3
+          = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}
+- content_for :js do 
+  javascript:
+    $(document).ready(function(){
+      var properties = #{raw(@properties.to_json)}; 
+      $('#product_properties').on('keydown', 'input.autocomplete', function() {
+        already_auto_completed = $(this).is('ac_input');
+        if (!already_auto_completed) {
+          $(this).autocomplete({
+            source: properties
+          });
+          $(this).focus();
+        }
+      });
+    });

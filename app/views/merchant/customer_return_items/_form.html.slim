@@ -1,0 +1,119 @@
+-if @eligible
+  = form_tag return_multiple_item_merchant_order_customer_return_items_path(@order), {method: :post}
+    fieldset.no-border-top
+          div data-hook="customer_return_items_form_fields" 
+            fieldset
+              table.table.table-responsive.table-bordered#return_item
+                thead
+                  tr
+                    th.text-center Select
+                    th.text-center Image
+                    th.text-center Item Name
+                    th.text-center Purchased Qty
+                    th.text-center Returned Qty 
+                    th.text-center Quantity
+                    th.text-center Unit Price (USD)
+                    th.text-center Tax Rate (%)
+                    th.text-center Item Amount (USD)
+                    th.text-center Tax (USD)
+                    th.text-center Refund Amount (USD)
+                  tbody
+                    label
+                      = check_box_tag 'select-all' , nil , false ,id: "return_item_select_all"
+                      |  Select all
+                    - order.get_store_line_items(@store.id).each do |line_item|
+                      - tax_rate = line_item.tax_rate
+                      - remaining_qty = line_item.quantity - line_item.return_quantity(order)
+                      -if remaining_qty != 0
+                        tr
+                          td 
+                            =check_box_tag 'customer_return_items[][line_item_id]' , line_item.id, false , class: "return_item_holder"
+                          td.text-center data-hook="cart_item_image" 
+                            - if line_item.variant.images.length == 0
+                                = link_to small_image(line_item.variant.product),class:"img-thumbnail"
+                            - else
+                              = link_to image_tag(line_item.variant.images.first.attachment.url(:mini)),class:"img-thumbnail"
+                          td.text-center
+                            .variant-name= line_item.variant.name
+                            / .variant-options= @inventoryunit.variant.options_text
+                            / -line_item.product.name
+                          td.text-center data-hook="cart_item_quantity" class = "return_item_td"
+                            = line_item.quantity
+                          td.text-center data-hook="cart_item_quantity"  class = "return_item_td" 
+                            = line_item.return_quantity(order)
+                          td.text-center data-hook="cart_item_quantity" style="width: 100px"
+                            .input-group.btn-block style=("max-width: 100px;")
+                              = number_field 'customer_return_items[][quantity]', nil, min: 1, max: remaining_qty ,class: "form-control text-center line_item_quantity selectbox-#{line_item.id}", size: 5, disabled: true , line_item_id: line_item.id
+                          td.text-center data-hook="cart_item_price" class = "unit-price-#{line_item.id} return_item_td" 
+                            = line_item.price
+                          td.text-center class = "tax-rate-#{line_item.id} return_item_td"
+                            = tax_rate * 100
+                          td.text-center class = "item-price-#{line_item.id} return_item_td"
+                            | 0.00
+                          td.text-center class = "tax-#{line_item.id} return_item_td" 
+                            | 0.00
+                          td.text-center data-hook="cart_item_total"  class = "total-#{line_item.id} return_item_td" 
+                            / = line_item.display_amount.to_html unless line_item.quantity.nil?
+                            | 0.00
+    .alert.alert-info style="color:black;"
+      | Total Amount: 
+      span#total-amount 0.00
+    .pull-right
+      = submit_tag 'Create Return', :class => 'btn btn-lg btn-success', :tabindex => 3, id: "continue-btn"
+- else
+  .alert.alert-info.no-objects-found
+    | You have already returned all the item of this Order
+
+/ .form-actions
+/     = f.button :submit
+
+
+-content_for :js do 
+  javascript:
+    $(document).on('change','input[type="checkbox"]',function(){
+      if ($(this).is(':checked')){
+        $('.selectbox-'+$(this).val()).attr('disabled',false);
+      } else {
+        $('.selectbox-'+$(this).val()).attr('disabled',true);
+      }
+       totalRefundAmount();
+    });
+
+    $(document).on('click','#return_item_select_all',function(){
+      if ($(this).is(':checked')) {
+        $('.return_item_holder').each(function(){
+          $(this).prop('checked', true); 
+          $(this).change();
+        });
+      } else {
+        $('.return_item_holder').each(function(){
+          $(this).prop('checked', false); 
+          $(this).change();
+        });
+      }
+    });
+
+    $(document).on('keyup', 'input[type="number"]',function(){
+      var qty = ($(this).val()) == null || $(this).val() == '' ? 0 : $(this).val()
+      var item_price = parseFloat(($('.unit-price-' + $(this).attr("line_item_id")).text())) * qty
+      tax = (item_price * parseFloat(($('.tax-rate-' + $(this).attr("line_item_id")).text()))) / 100
+      $('.item-price-' + $(this).attr("line_item_id")).text(item_price.toFixed(2));
+      $('.tax-' + $(this).attr("line_item_id")).text(tax.toFixed(2));
+      $('.total-' + $(this).attr("line_item_id")).text((tax + item_price).toFixed(2));
+      totalRefundAmount();
+    });
+
+    function totalRefundAmount(){
+      var total = 0.00;
+       $('input:checkbox').each(function () {
+        if ($(this).is(':checked'))
+        {
+          total = total + parseFloat($('.total-' + $(this).val()).text())
+        }
+        $('#total-amount').text(total.toFixed(2))
+      });
+    }
+
+
+
+

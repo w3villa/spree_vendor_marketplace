@@ -1,0 +1,18 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        a href=spree.orders_path  Order
+      li
+        span  Return
+
+    .row
+      .col-sm-3
+        =render :partial=>"merchant/shared/seller"
+      .col-md-9
+        h2 New Order Return Request
+        =render partial: 'form', locals: {order: @order}

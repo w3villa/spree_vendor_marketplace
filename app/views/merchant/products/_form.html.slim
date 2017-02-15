@@ -1,0 +1,130 @@
+.col-md-9
+  = form_for [:merchant, @product], html: {multipart: true} do |f|
+    .row.top-margin-row
+      .col-md-8
+        .from-group
+          = f.field_container :name do 
+            = f.label :name, raw(Spree.t(:name) + content_tag(:span, ' *', :class => 'required control-label'))
+            span.input-icon.icon-right
+              = f.text_field :name, :class => 'fullwidth title form-control input-bg' 
+              .fa &#xf170;
+            = f.error_message_on :name
+        .from-group
+          = f.label :slug, class: "control-label"
+          span.input-icon.icon-right
+            = f.text_field :slug, class: "form-control input-bg", readonly: true
+            .fa &#xf0c1;
+        .form-group
+          = f.field_container :description do 
+            = f.label :description, Spree.t(:description), class: "control-label"
+            span.input-icon.icon-right
+              = f.text_area :description, {:rows => "#{unless @product.has_variants? then '20' else '13' end}", :class => 'fullwidth form-control input-bg'} 
+              .fa &#xf022;
+            = f.error_message_on :description
+        .form-group
+          = f.field_container :taxon do 
+            = f.label :taxon_ids, raw(Spree.t(:categories) + content_tag(:span, ' *', :class => "required control-label lable-margin-top"))
+            br
+            = f.text_field :taxon_ids, :value => @product.taxon_ids.join(',')
+        .form-group
+          = f.field_container :option_types do 
+            = f.label :option_type_ids, Spree.t(:option_types) 
+            br
+            = f.hidden_field :option_type_ids, :value => @product.option_type_ids.join(',')
+      .col-md-4
+        .form-group
+          = f.field_container :price do 
+            = f.label :price, raw(Spree.t(:sale_price) + ' (USD)' + content_tag(:span, ' *', :class => "required control-label lable-margin-top"))
+            span.input-icon.icon-right
+              = f.number_field :price, :value => number_to_currency(@product.price, :unit => ''), :class => 'numbersOnly fullwidth form-control input-bg', :required => "" 
+              .fa &#xf0d6;
+            = f.error_message_on :price
+        .form-group
+          = f.field_container :shipping_categories do 
+            = f.label :shipping_category_id, Spree.t(:shipping_categories), label: "control-label lable-margin-top" 
+            = f.collection_select(:shipping_category_id, @shipping_categories, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2 fullwidth form-control input-bg auto-select' }) 
+            = f.error_message_on :shipping_category 
+        .form-group
+          = f.field_container :tax_category do 
+            = f.label :tax_category_id, raw(Spree.t(:tax_category) + content_tag(:span, ' *', :class => "required control-label lable-margin-top")), class: "control-label" 
+            = f.collection_select(:tax_category_id, @tax_categories, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2 fullwidth form-control input-bg auto-select' }) 
+            = f.error_message_on :tax_category 
+        .form-group
+          .col-md-6.top-margin-row.child-div
+            = f.field_container :cost_price do 
+              = f.label :cost_price, raw('Retail Price' + ' (USD) ' + content_tag(:span, ' *', :class => "required control-label lable-margin-top"))
+              span.input-icon.icon-right 
+                = f.number_field :cost_price, class: "numbersOnly form-control input-bg",:required => "" ,:min => @product.price , :step => "0.01"
+                .fa &#xf0d6;
+          .col-md-6.top-margin-row.child-div1
+            = f.field_container :cost_currency do
+              = f.label :cost_currency, class: "control-label"
+              span.input-icon.icon-right
+                = f.text_field :cost_currency, class: "form-control input-bg"
+                .fa &#xf155;
+          .form-group
+            = f.field_container :available_on do 
+              = f.label :available_on, class: "control-label"
+              span.input-icon.icon-right
+                = f.text_field :available_on, class: "form-control input-bg datepicker", value: @product.available_on.try(:to_date)
+                .fa &#xf274;
+          .form-group
+            = f.field_container :discontinue_on do 
+              = f.label :discontinue_on, class: "control-label"
+              span.input-icon.icon-right
+                = f.text_field :discontinue_on, class: "form-control input-bg datepicker", value: @product.discontinue_on.try(:to_date)
+                .fa &#xf274;
+          .form-group
+            = f.field_container :sku do 
+              = f.label :sku, class: "control-label"
+              span.input-icon.icon-right
+                = f.text_field :sku, class: "form-control input-bg", readonly: true
+                .fa &#xf02a;
+          .form-group
+            = f.field_container :promotionable do 
+              label.control-label
+                = f.check_box :promotionable
+                |   
+                = Spree.t(:promotionable)
+
+          .form-group
+            .col-md-6.top-margin-row.child-div
+              = f.label :weight, class: "control-label"
+              span.input-icon.icon-right
+                = f.number_field :weight, class: "numbersOnly form-control input-bg"
+                .fa &#xf24e;
+            .col-md-6.top-margin-row.child-div1
+              = f.label :height, class: "control-label"
+              span.input-icon.icon-right
+                = f.number_field :height, class: "numbersOnly form-control input-bg"
+                .fa &#xf07d;
+          .form-group
+            .col-md-6.top-margin-row.child-div
+              = f.label :width, class: "control-label"
+              span.input-icon.icon-right
+                = f.number_field :width, class: "numbersOnly form-control input-bg"
+                .fa &#xf07e;
+            .col-md-6.top-margin-row.child-div1
+              = f.label :depth, class: "control-label"
+              span.input-icon.icon-right
+                = f.number_field :depth, class: "numbersOnly form-control input-bg"
+                .fa &#xf01c; 
+    .row.top-margin-row
+      .col-md-12
+        = f.label :meta_keywords, Spree.t(:meta_keywords)
+        span.input-icon.icon-right
+          = f.text_field :meta_keywords, :class => 'fullwidth form-control input-bg'
+    .row.top-margin-row
+      .col-md-12
+        = f.label :meta_description, Spree.t(:meta_description)
+        span.input-icon.icon-right
+          = f.text_field :meta_description, :class => 'fullwidth form-control input-bg'
+    .row.top-margin-row
+      .col-md-6.update-btn
+        = f.submit nil, class: "btn btn-primary"
+      .col-md-6
+        = link_to "Cancel", merchant_products_path, class: "btn btn-default"
+.col-md-3
+  = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}
+- content_for :title do 
+  = @product.new_record? ? "Craete Product" : "Edit Product"

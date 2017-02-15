@@ -1,0 +1,1 @@
+json.array! @customer_return_items, partial: 'customer_return_items/customer_return_item', as: :customer_return_item

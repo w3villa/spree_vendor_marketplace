@@ -1,0 +1,36 @@
+.store-logo-wrapper
+	a href="#"
+		= image_tag @store.try(:logo).try(:url,:logo)
+h4
+	strong Store Information
+.table-responsive
+	table.table.table-condensed.table-responsive.table-user-information
+		tbody
+			tr
+				td
+					strong
+						span.glyphicon.glyphicon-user.text-primary
+						| &nbsp; Store Name:
+				td.text-primary
+					= @store.try(:name)
+			tr
+				td
+					strong
+						span.glyphicon.glyphicon-phone-alt.text-primary
+						|&nbsp; Contact no:
+				td.text-primary
+					= @store.try(:phone_number)
+			tr
+				td
+					strong
+						span.glyphicon.glyphicon-home.text-primary
+						|&nbsp; Address:
+				td.text-primary
+					= @store.try(:city)
+							 tr
+			td
+				strong
+					span.glyphicon.glyphicon-envelope.text-primary
+					| &nbsp;Website:
+			td.text-primary
+				= @store.try(:site_url)

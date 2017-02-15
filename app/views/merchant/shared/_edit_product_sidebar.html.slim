@@ -1,0 +1,12 @@
+.edit-sidebar
+  ul
+    li.side-menu.menu-first class= active_nav("product_details")
+      = link_to "PRODUCT DETAILS", edit_merchant_product_path(product_id), class: "crip-text"
+    li.side-menu class= active_nav("images")
+      = link_to "IMAGES", merchant_product_images_path(product_id), class: "crip-text"
+    li.side-menu class= active_nav("variants")
+      = link_to "VARIANTS", merchant_stores_products_variants_path(product_id: product_id), class: "crip-text"
+    li.side-menu class= active_nav("product_properties")
+      = link_to "PRODUCT PROPERITES", merchant_product_product_properties_path(product_id: product_id), class: "crip-text"
+    li.side-menu class= active_nav("stock_management")
+      = link_to "STOCK MANAGEMENT", merchant_product_stock_path(product_id: product_id), class: "crip-text"

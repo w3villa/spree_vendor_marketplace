@@ -1,0 +1,1 @@
+json.partial! "customer_return_items/customer_return_item", customer_return_item: @customer_return_item

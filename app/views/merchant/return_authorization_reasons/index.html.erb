@@ -1,0 +1,60 @@
+
+<div id="container">
+  <div class="container">
+    <div clss="row">
+      <div class= "col-sm-3">
+        <%= render partial: 'merchant/shared/seller' %>
+      </div>
+      <div class="col-sm-9">
+        
+        <%= render partial: 'add_btn' %>
+        <h2>RETURN AUTHORIZATION REASON</h2>
+        <% if @return_auth_reason.any? %>
+          <table class="table" id='listing_named_types' data-hook>
+            <thead>
+              <tr data-hook="named_types_header">
+                <th><%= Spree.t(:name) %></th>
+                <th><%= Spree.t(:state) %></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="">
+              <% @return_auth_reason.each do |named_type| %>
+                <tr id="<%=  %>" data-hook="">
+                  <td class="align-center">
+                    <%= named_type.name %>
+                  </td>
+                  <td class="align-center">
+                    <%= Spree.t(named_type.active? ? :active : :inactive) %>
+                  </td>
+                  <td class="actions actions-1 text-right">
+                    <%= link_to "<span class='fa'>&#xf044;</span>".html_safe, edit_merchant_return_authorization_reason_path(named_type.id), class: "btn btn-info btn-sm", "data-no-turbolink" => true %>
+                      
+                     <%= link_to "<span class='fa'>&#xf014;</span>".html_safe, merchant_return_authorization_reason_path(named_type.id), class: "btn btn-danger btn-sm", method: "delete" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>  
+          <table class="table" id='listing_named_types' data-hook>
+            <thead>
+              <tr data-hook="named_types_header">
+                <th><%= Spree.t(:name) %></th>
+                <th><%= Spree.t(:state) %></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="">
+                <tr id="<%=  %>" data-hook="">
+                  <td class="align-center" colspan="3">
+                    <center>There is no reason for return authorization</center>
+                  </td>
+                </tr>
+            </tbody>
+          </table>        
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

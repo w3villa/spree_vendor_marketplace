@@ -1,0 +1,13 @@
+.filter-wrap.row.margin-top
+  .col-xs-12
+    = form_tag "", method: :get, id: "search-product" do 
+      .input-group.index-filter-button
+        span.input-group-btn style="border: 1px solid #cccccc;"
+          = link_to merchant_products_path, class: "btn btn-default js-show-index-filters", style: "text-transform: uppercase;" do  
+            span.fa.fa-align-justify style="font-weight: 600;"
+            |  All Products
+        input type="text" name="q[s]" id="quick-search" value=(params[:q][:s] rescue "") class="form-control" placeholder="Quick search..."
+      .input-group.index-filter-button.pull-right.margin-top
+        button.btn.btn-primary type="submit"
+          span.fa.fa-search
+          |  Search

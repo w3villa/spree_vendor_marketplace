@@ -1,0 +1,177 @@
+- if current_spree_user && @is_owner
+  - @store = current_spree_user.stores.first
+br
+  = link_to merchant_store_url(@store) do 
+    .store-logo-wrapper
+      .image
+        = image_tag @store.try(:logo).try(:url,:large),:class=>"center img-responsive"
+  h4 style="padding-top:15px;"
+    strong Store Information
+  .table-responsive
+    table.table.table-condensed.table-responsive.table-user-information
+      tbody
+        tr
+          td
+            strong
+              span.fa.fa-opencart.text-primary
+              | &nbsp; Store Name:
+          td.text-primary
+            = @store.try(:name).titleize
+        tr
+          td
+            strong
+              span.fa.fa-area-chart.text-primary
+              | &nbsp; Store Rating:
+          td.text-primary
+            - num_user = @store.ratings.count > 0 ? @store.ratings.count : 1
+            - rate_count = (@store.ratings.try(:sum, :rating) / num_user).round(2)
+            span#rate
+            |   
+            a style="color: blue; text-decoration: underline;" href="#" id="rateUs" Rate Us
+        tr
+          td
+            strong
+              span.fa.fa-mobile-phone.text-primary
+              |&nbsp; Contact no:
+          td.text-primary
+            = @store.try(:phone_number)
+        tr
+          td
+            strong
+              span.fa.fa-globe.text-primary
+              | &nbsp;Website:
+          td.text-primary
+            = @store.try(:site_url)
+        tr
+          td colspan=2
+            strong
+              span.fa.fa-map-marker.text-primary
+              |&nbsp; Address:
+              '
+            span.text-primary style="margin-left: 36px;"
+              = @store.try(:address).titleize
+
+  - if @is_owner
+    - title_text = current_spree_user.has_spree_role?("merchant") ? "" : "Approval pending"
+    .s-link-wrap
+        
+      = link_to edit_store_email_tokens_path(id: @store.id, type: "Merchant::Store"), class: "btn-default btn-lg btn-block text-left btn-border-radius store-btn ", "data-no-turbolink" => true, title: title_text do
+        .fa.fw &#xf044;
+        | Edit Store Information
+      - if current_spree_user.has_spree_role?("merchant")
+        = link_to new_merchant_product_path, class: " store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw &#xf055;
+          | Add Products
+
+        = link_to merchant_products_path, class: " store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw &#xf15c;
+          | View and edit all Products
+
+        = link_to merchant_store_orders_path(@store.slug), class: "store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw &#xf07a;
+          | View Orders
+
+        / = link_to merchant_return_authorization_reasons_path, class: "store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw.fa-reply
+          | Return Authorization Reason
+
+        = link_to returns_merchant_orders_path, class: "store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw.fa-reply
+          | Return Order
+
+        = link_to merchant_store_amazon_product_path, class: "store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+          .fa.fw &#xf270;
+          | Fetch Product From Amazon
+      br
+    .pull-right.map-wrapper
+      #map-preview data-is_located="#{@store.is_located?}" data-longitude="#{@store.longitude}" data-latitude="#{@store.latitude}"&gt;
+      = (link_to "#{@store.is_located? ? "Update" : "Add"} Location", "#", id: "add-location") if spree_user_signed_in? && current_spree_user.stores.include?(@store)
+  - else
+    .col-md-4.col-md-offset-4
+
+
+#rating.modal.fade role="dialog" style=("margin-top: 45px;") 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close data-dismiss="modal" type="button"  ×
+        h4.modal-title Rate Us
+      .modal-body
+        .form-group
+          = label_tag :rating, "Rating", class: "control-label"
+          .form-group
+            - for i in 0..5
+              i#star
+          = hidden_field_tag "point", 0, id: "point"
+        .form-group
+          = label_tag :comment, "Comment", class: "control-label"
+          = text_area_tag "comment", current_spree_user.try(:comments).try(:where, commentable_id: @store.id).try(:first).try(:comment), class: "form-control", rows: 7, id: "review"
+      .modal-footer
+        button#save-rating.btn.btn-primary data-store_id="#{@store.slug}" data-user_id="#{current_spree_user.try(:id)}"  Save
+        button#cancel-rating.btn.btn-default data-dismiss="modal" type="button"  Close
+    
+#map-dialog.modal.fade role="dialog" style=("margin-top: 45px;") 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close data-dismiss="modal" type="button"  ×
+        h4.modal-title Please update your address
+      .modal-body
+        #map-canvas
+      .modal-footer
+        button#save-location.btn.btn-primary data-store_id="#{@store.slug}"  Save
+        button#cancel-location.btn.btn-default data-dismiss="modal" type="button"  Close
+
+- content_for :head do
+  script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwa_aSOU4vA1Z_E6Vlt5-AG-nncymVpqg&libraries=places" type="text/javascript" 
+- content_for :js do
+  javascript:
+    $(function() {
+      if(window.location.hash == "#map") {
+        $("#add-location").trigger("click");
+      }
+    });
+    $('#rateUs').click(function() {
+      $('#rating').modal('show');
+      return false;
+    });
+  javascript:
+    $(document).ready(function(){
+      $('#star').raty({
+        halfShow: true,
+        half: true,
+        score : parseFloat("#{current_spree_user.try(:ratings).try(:where, rateable_id: @store.id).try(:first).try(:rating).to_f}")
+      });
+
+      $('#save-rating').click(function() {
+        var userId = $(this).data('user_id');
+        if(!!userId){
+          rateParams = { rating: $('#star').children("input[name=score]").val(), user_id: userId, comment: $('#review').val() };
+          $.post("/api/v1/merchant_stores/"+$(this).data('store_id')+"/rate", rateParams, function(data){
+            if(data.success){
+              $('.modal').modal('hide');
+              storeRating(data.rating);
+              noty({text: data.message, type: "info"});
+            } else {
+              $('.modal').modal('hide');
+              noty({text: data.message, type: "error"});
+            }
+          });
+        } else {
+          window.location = "/login";
+          noty({text: "You need to login/signup to rate a store", type: "error"});
+        }
+      });
+
+      storeRating("#{rate_count}");
+
+      function storeRating(n) {
+        $('#rate').raty({
+          halfShow: true,
+          half: true,
+          score: n,
+          readOnly: true
+        });
+      }
+
+    });

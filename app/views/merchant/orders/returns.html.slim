@@ -1,0 +1,38 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span  Store Order History
+    .row
+      .col-sm-3
+        =render :partial => "merchant/shared/seller"
+      .col-sm-9
+        = render partial: "merchant/shared/order_header", locals: {order: nil}
+        .form-section
+          table.table.table-bordered#return_item
+            thead
+              tr
+                th.text-center Order Number
+                th.text-center  Customer
+                th.text-center  Order Date
+                / th.text-center Action
+            tbody
+              - unless @return_orders.blank?
+                - @return_orders.each do |order|
+                  - @order = Spree::Order.find(order)
+                  tr  
+                    td= link_to @order.try(:number),  merchant_order_customer_return_items_path(@order)
+                    td= @order.user.full_name
+                    td= @order.completed_at.strftime("%d-%m-%Y")
+                    / td= link_to merchant_order_approve_path(order), class: "btn btn-danger", title: "Return Order", method: :get do 
+                          i.fa.fa-reply
+              - else
+                tr
+                  td colspan="7"
+                    span No orders found.
+        / - if @orders.respond_to?(:num_pages)
+        /   = paginate @orders

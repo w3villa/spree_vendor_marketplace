@@ -1,0 +1,15 @@
+.product-header
+    .row
+    .col-md-4
+      - unless order.blank?
+        h2.head-text= "Order# #{order.try(:number)}"
+    .col-md-8.option-buttons
+      - if (params[:controller] == "merchant/orders" && params[:action] == "index")
+        = link_to merchant_stores_path, class: "btn btn-default", "data-no-turbolink" => true do 
+          span.fa.fa-arrow-left
+          |  Back To Home
+      - else
+        = link_to merchant_orders_path, class: "btn btn-default", "data-no-turbolink" => true do 
+          span.fa.fa-arrow-left
+          |  Back to orders list
+        

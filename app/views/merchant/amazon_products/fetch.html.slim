@@ -1,0 +1,67 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span  Fetch Amazon product
+    .row
+      column#column-left.col-sm-3.hidden-xs
+        =render :partial=>"merchant/shared/seller"
+      #content.col-sm-9
+        h1 Amazon Products
+        .panel.panel-default
+          .panel-heading
+            .row
+              = form_tag "", {method: :get} do |f|
+                = hidden_field_tag :by, "keyword"
+                .col-sm-1
+                  .btn.btn-default data-toggle="tooltip" title="All Product" 
+                    i.fa.fa-bars
+                .col-sm-6
+                  = text_field_tag :keywords, params[:keywords],class:"form-control"
+                .col-sm-3
+                  = select_tag :serch_index, options_for_select(['Marketplace','Baby','GiftCards','Luggage','Beauty','All','HomeGarden','VideoGames','Jewelry','SportingGoods','Apparel','DVD','Grocery','HealthPersonalCare','PCHardware','Books','Watches','Music','Shoes','Toys','Electronics','PetSupplies'], params[:serch_index] || "All"),class:" fullwidth form-control input-bg auto-select"
+                .col-sm-1
+                  = number_field_tag :item_page, (params[:item_page] || 1),class:" fullwidth form-control input-bg auto-select"
+                .col-sm-1
+                  = submit_tag "Search", class:"pull-right btn btn-default  "
+        - if @amazon_products.present?
+          .row
+            = form_tag import_collection_merchant_amazon_products_path,{method: :post} do 
+              .col-xs-12
+                label
+                  input type="checkbox" id="select-all"
+                  |  Select all
+              - @amazon_products.each do |item|
+                .col-md-3.product-item 
+                  .thumbnail style=("min-height:280px;")
+                    -if !item.medium_image.blank?
+                      .thumb-image-container.product-img.table-center
+                        a.aligner.img-center href= new_merchant_amazon_product_path(asin: item.asin) target="_blank"
+                          = image_tag item.medium_image.try(:url) ,class:"img-responsive  "
+                    -else 
+                      .thumb-image-container.product-img.table-center
+                        a.aligner.img-center href= new_merchant_amazon_product_path(asin: item.asin) target="_blank"
+                        -unless item.image_sets.blank?
+                          = image_tag item.image_sets.image_set.first.try(:medium_image).try(:url) ,class:"img-responsive  "
+                    .product-details.trim-text
+                      = link_to  "#{item.item_attributes.title} ", new_merchant_amazon_product_path(asin: item.asin), target: "_blank"
+                    .text-center
+                      = check_box_tag "product_ids[]", item.asin, false, class: "asin-holder"
+                    .text-center
+                      = link_to "Import", new_merchant_amazon_product_path(asin: item.asin), class: "btn btn-default margin-bottom btn-xs", target: "_blank"
+              .col-sm-12 style=("margin-bottom:10px;")
+                = submit_tag "Add selected product(s) to your Store", class:"pull-right btn btn-primary margin-bottom"
+          .row style=("margin-bottom:10px;")
+            .col-sm-10
+              b Total Results :
+              b = @total_results
+            .col-sm-2
+              = form_tag "", {method: :get} do |f|
+                = hidden_field_tag :item_page,params[:item_page].to_i + 1 
+                = hidden_field_tag :keywords, params[:keywords]
+                = hidden_field_tag :serch_index, params[:serch_index]
+                = submit_tag "Next Page >", class:"pull-right btn btn-default margin-bottom"

@@ -1,0 +1,13 @@
+.row data-hook="admin_image_form_fields"
+  .col-md-6
+    .form-group data-hook="file" 
+      = f.label :attachment, Spree.t(:filename), class: "control-label"
+      = f.file_field :attachment, class: "form-control"
+    .form-group data-hook="variant"
+      = f.label :viewable_id, Spree::Variant.model_name.human, class: "control-label"
+      = f.select :viewable_id, @variants, {}, {:class => 'form-control'}
+      = f.hidden_field :viewable_type, value: "Spree::Variant"
+  .col-md-6 data-hook="alt_text"
+    .form-group
+      = f.label :alt, Spree.t(:alt_text), class: "control-label"
+      = f.text_area :alt, :rows => 4, :class => 'form-control'

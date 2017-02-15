@@ -1,0 +1,32 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+      li
+        span  Merchant
+    .row
+      .col-md-12
+        .form-section
+          - if !current_spree_user.has_store
+            .jumbotron
+              h1 Sell with us!
+              p Use our plateform to sell your products.
+              p= link_to "Apply For New Store", new_merchant_store_path, class: "btn btn-primary btn-lg"
+            
+          - elsif current_spree_user.has_store && current_spree_user.active_store
+            .jumbotron
+              h1 Sell with us!
+              p Use our platform to sell your products
+              p= link_to "Go to #{@stores.first.name}", merchant_store_path(id: @stores.first), class: "btn btn-primary btn-lg"
+            
+          - else
+            .jumbotron
+              h1 Pending for approval
+              p= "Your store “#{@stores.first.name}” is not approved yet, please wait for approval."
+              p
+                = link_to edit_merchant_store_path(@stores.first), class: "btn btn-primary btn-lg" do
+                  span.fa.fa-edit
+                  span= " Edit #{@stores.first.name}" 

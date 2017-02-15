@@ -1,0 +1,8 @@
+.container
+  .row
+    .col-md-9
+      legend New Variant
+      .form-section
+        = render partial: "form"
+    .col-md-3
+      = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}

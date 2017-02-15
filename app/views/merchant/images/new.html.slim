@@ -1,0 +1,28 @@
+#container 
+  .container
+    ul.breadcrumb
+        li
+          a href="/" 
+            i.fa.fa-home
+            | Home
+        li
+          span  Add Product Image
+    .row
+      .form-section
+        .col-md-9
+          .top-margin-row
+            = render partial: 'spree/admin/shared/error_messages', locals: { target: @product }
+            - content_for :page_title do
+              = Spree.t(:new_image)
+            = form_for [:merchant, @product, @image], html: { multipart: true } do |f|
+              fieldset[data-hook="new_image"]
+                = render partial: 'form', locals: { f: f }
+                .form-actions[data-hook="buttons"]
+                  button.btn.btn-primary type="submit"
+                    span.fa.fa-check
+                    |  Create 
+                  = link_to merchant_product_images_url(@product), class: "btn btn-default margin-left" do 
+                    span.fa.fa-remove
+                    |  Cancel
+        .col-md-3
+          = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}

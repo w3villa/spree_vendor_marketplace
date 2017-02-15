@@ -1,0 +1,51 @@
+
+.container
+  = render partial: "merchant/shared/order_header", locals: {order: @order}
+  .row
+    .col-md-12
+      .form-section
+        .col-md-9
+          .row.top-margin-row
+            .side-space
+              .panel.panel-default
+                .panel-heading.center-text Checkout Details
+                .panel-body
+                  .item-container.alternate
+                    .col-md-5.key-span Name: 
+                    .col-md-6.value-span= @customer.full_name
+                  .item-container
+                    .col-md-5.key-span Email: 
+                    .col-md-6.value-span= @customer.email
+                  .item-container.alternate
+                    .col-md-5.key-span Guest Checkout: 
+                    .col-md-6.value-span= "No"
+              .panel.panel-default
+                .panel-heading.center-text Address Detail
+                .panel-body
+                  .item-container.alternate
+                    .col-md-5.key-span Name: 
+                    .col-md-6.value-span= @customer.full_name || "Not Present"
+                  .item-container
+                    .col-md-5.key-span Address: 
+                    .col-md-6.value-span= @customer.full_address || "Not Present"
+                  .item-container.alternate
+                    .col-md-5.key-span City: 
+                    .col-md-6.value-span= @bill_address.try(:city) || "Not Present"
+                  .item-container
+                    .col-md-5.key-span State Name: 
+                    .col-md-6.value-span= @bill_address.try(:state_name) || "Not Present"
+                  .item-container.alternate
+                    .col-md-5.key-span Phone: 
+                    .col-md-6.value-span= @bill_address.try(:phone) || "Not Present"
+                  .item-container
+                    .col-md-5.key-span Zip Code: 
+                    .col-md-6.value-span= @bill_address.try(:zipcode) || "Not Present"
+                  .item-container.alternate
+                    .col-md-5.key-span Alternative Phone: 
+                    .col-md-6.value-span= @bill_address.try(:alternative_phone) || "Not Present"
+        .col-md-3
+          = render partial: "merchant/shared/edit_order_sidebar", locals: {order: @order}
+
+
+
+          

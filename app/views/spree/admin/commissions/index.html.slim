@@ -1,0 +1,17 @@
+- content_for :page_title do
+  = Spree.t(:commission)
+.panel.panel-default.margin-top-20
+  .panel-heading
+    .panel-title Commission Percentage
+  .panel-body
+    = form_for [:admin, @commission], html: {} do |f|
+      p 
+        b Note:
+        span &nbsp; Please do not put % or any other symbol
+      .form-group
+        = f.text_field :percentage, class: 'form-control'
+      .form-group
+        = f.submit nil, class: 'btn btn-primary'
+
+
+

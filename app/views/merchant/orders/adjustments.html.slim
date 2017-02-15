@@ -1,0 +1,36 @@
+
+.container
+  = render partial: "merchant/shared/order_header", locals: {order: @order}
+  .row
+    .col-md-12
+      .form-section
+        .col-md-9
+          .row.top-margin-row
+            .side-space
+              table.table.table-striped.table-bordered
+                thead
+                  tr
+                    th ADJUSTABLE
+                    th DESCRIPTION
+                    th AMOUNT
+                    th STATE
+                    th OPTION
+                tbody
+                  - unless @adjustments.blank?
+                    - @adjustments.each do |adjustable|
+                      tr
+                        td= "Order"
+                        td= adjustable.label
+                        td= number_to_currency(adjustable.amount)
+                        td= adjustable.state.try(:titleize)
+                        td.btn-fix
+                          = link_to "", class: "btn btn-default" do
+                          	span.fa &#xf044;
+                          = link_to "", class: "btn btn-default" do
+                          	span.fa &#xf014;
+                  - else
+                    tr
+                      td colspan= "5"
+                        span No adjustement detail found.
+        .col-md-3
+          = render partial: "merchant/shared/edit_order_sidebar", locals: {order: @order} 

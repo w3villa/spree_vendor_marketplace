@@ -1,0 +1,102 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        a href="/" 
+          i.fa.fa-home
+          | Home
+        li 
+          a href=merchant_path
+            | Merchant
+
+        li 
+          a href=merchant_stores_path
+            | Store
+      li
+        span  Products
+    .row
+      .col-sm-3
+        =render :partial=>"merchant/shared/seller"
+      .col-sm-9
+        = render partial: "merchant/shared/product_header", locals: {text: "Products Listing", product_name: @product.try(:name), store_id: @collection.first.try(:store).try(:friendly_id)}
+        = render partial: "filter"
+        - content_for :page_title do 
+        / ul.nav.nav-tabs
+        /   li.active
+        /     a data-toggle="tab" href="#published"  Published Products
+        /   li
+        /     a data-toggle="tab" href="#unpublished"  Unpublished Products
+        ul.nav.nav-tabs style="margin:0px;"
+          li  style="width:50%" class=((params[:active_tab] != 'unpublished') ? 'active' : '')
+            a href=merchant_products_path(active_tab: "published") Published Products
+          li style="width:50%" class=((params[:active_tab] == 'unpublished') ? 'active' : '') 
+            a href=(merchant_products_path(active_tab: "unpublished")) Unpublished Products
+        .tab-content 
+          #published.tab-pane.fade.in.active
+            .form-section
+              -if @tab == "unpublished"
+                b 
+                  u Category, Tax category, Sale Price, Retail Price and Stock are mandatory fields for product to  be    Published on Site.
+                br 
+                br
+              table.table.table-striped
+                thead
+                  tr
+                    th SKU
+                    th Name
+                    th View
+                    th Stock 
+                    th Price
+                    th Available From 
+                    th Action
+                tbody
+                  - unless @collection.blank?
+                    - @collection.each do |product|
+                      tr
+                        td= product.sku
+                        td= product.name
+                        td= product.view_counter
+                        td= product.total_on_hand
+                        td= product.price
+                        td= product.available_on.try(:to_date) 
+                        td.btn-fix
+                          = link_to "<span class='fa'>&#xf044;</span>".html_safe, edit_merchant_product_path(product.slug), class: "btn btn-info btn-sm", "data-no-turbolink" => true
+                          
+                          = link_to "<span class='fa'>&#xf014;</span>".html_safe, merchant_product_path(product.slug), class: "btn btn-danger btn-sm", method: "delete"
+                  -else
+                    = "No Product Found"
+              .row
+                .col-sm-6.text-left
+                .col-sm-6
+                  - if @collection.respond_to?(:num_pages)
+                    = paginate @collection
+          / #unpublished.tab-pane.fade
+          /   .form-section
+
+          /     table.table.table-striped
+          /       thead
+          /         tr
+          /           th SKU
+          /           th Names
+          /           th View
+          /           th Price
+          /           th Available From 
+          /           th Action
+          /       tbody
+          /         - unless @collection.blank?
+          /           - @collection.each do |product|
+          /             tr
+          /               td= product.sku
+          /               td= product.name
+          /               td= product.view_counter
+          /               td= product.price
+          /               td= product.available_on.try(:to_date) 
+          /               td.btn-fix
+          /                 = link_to "<span class='fa'>&#xf044;</span>".html_safe, edit_merchant_product_path(product.slug), class: "btn btn-info btn-sm", "data-no-turbolink" => true
+                          
+          /                 = link_to "<span class='fa'>&#xf014;</span>".html_safe, merchant_product_path(product.slug), class: "btn btn-danger btn-sm", method: "delete"
+          /     .row
+          /       .col-sm-6.text-left
+          /       .col-sm-6
+          /         - if @collection.respond_to?(:num_pages)
+          /           = paginate @collection

@@ -1,0 +1,10 @@
+.product-header
+	  .row
+		  .col-md-12
+		    h2= "#{text} #{product_name}"
+		  .col-md-12.option-buttons
+		      = link_to "NEW PRODUCT", new_merchant_product_path, class: "btn btn-primary", "data-no-turbolink" => true
+		      - if ((params[:controller] == "merchant/products") && (params[:action] == "index")) && !store_id.blank?
+		        = link_to "HOME", merchant_store_path(store_id), class: "btn btn-primary home-btn", "data-no-turbolink" => true
+		      - else
+		        = link_to "BACK TO PRODUCT LIST", merchant_products_path, class: "btn btn-primary", "data-no-turbolink" => true

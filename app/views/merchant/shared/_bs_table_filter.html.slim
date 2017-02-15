@@ -1,0 +1,3 @@
+ - if content_for?(:table_filter)
+  div#table-filter data-hook= "" class= "#{content_for?(:sidebar) ? 'twelve' : 'sixteen'} columns"
+    = yield :table_filter

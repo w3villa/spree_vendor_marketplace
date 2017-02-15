@@ -1,0 +1,45 @@
+.container
+  - if !@product.empty_option_values?
+    - content_for :page_actions do
+      .container.text-right
+        = link_to merchant_stores_products_variants_new_path(product_id: @product.slug), class: "btn btn-primary margin-20", "data-no-turbolink" => true do 
+          i.fa.fa-plus
+          |  Add new variant
+        = link_to  edit_merchant_product_path(@product), class: "btn btn-primary margin-left", "data-no-turbolink" => true do 
+              span.fa.fa-arrow-left
+              | &nbsp; BACK TO PRODUCT EDIT
+  .row
+    .form-section
+      .col-md-9
+        .top-margin-row
+          table.table.table-striped
+            thead
+              tr
+                th OPTION
+                th PRICE
+                th SKU
+                th OPTIONS
+            tbody
+              - unless @variants.blank?
+                - @variants.each do |variant|
+                  tr
+                    td= variant.option_values.try(:collect, &:presentation).join(", ")
+                    td= @product.try(:price)
+                    td= @product.sku
+                    td.btn-part
+                      = link_to edit_merchant_product_variant_path(product_id: @product.slug, id: variant.id), class: "btn btn-default", "data-no-turbolink" => true do 
+                        span.fa.fa-edit
+                        |  
+                      = link_to "<i class='fa' style='vertical-align: text-top;'>&#xf014;</i>".html_safe, merchant_product_variant_path(product_id: @product.slug, id: variant.id), class: "btn btn-danger margin-left", method: "delete"
+              - else
+                tr
+                  td colspan="4"
+                    - if @product.empty_option_values?
+                      span To add variants you must first define 
+                      |  
+                      span= link_to "Option types", edit_merchant_product_path(@product.slug), "data-no-turbolink" => true
+                    - else
+                      span No Variants found.   
+                      span= link_to "Create One", merchant_stores_products_variants_new_path(product_id: @product.slug), "data-no-turbolink" => true
+      .col-md-3
+        = render partial: "merchant/shared/edit_product_sidebar", locals: {product_id: @product.slug}
