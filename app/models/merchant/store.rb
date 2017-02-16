@@ -31,13 +31,13 @@ module Merchant
     after_save :notify_admin
     # after_create :notify_user
 
-    has_attached_file :logo,  
-      Pyklocal::Configuration.paperclip_options[:stores][:logo]
-    validates_attachment :logo, content_type: { content_type: /\Aimage\/.*\Z/ }
+    # has_attached_file :logo,  
+    #   Pyklocal::Configuration.paperclip_options[:stores][:logo]
+    # validates_attachment :logo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
-    has_attached_file :certificate,  
-      Pyklocal::Configuration.paperclip_options[:stores][:logo]
-    validates_attachment :certificate, content_type: { content_type: /\Aimage\/.*\Z/ }
+    # has_attached_file :certificate,  
+    #   Pyklocal::Configuration.paperclip_options[:stores][:logo]
+    # validates_attachment :certificate, content_type: { content_type: /\Aimage\/.*\Z/ }
 
     extend FriendlyId
     friendly_id :name, use: :slugged
@@ -127,9 +127,9 @@ module Merchant
       pickable_line_items.collect(&:order).uniq.flatten
     end
 
-    searchable do 
-      latlon(:loctn) { Sunspot::Util::Coordinates.new(latitude, longitude) }
-    end
+    # searchable do 
+    #   latlon(:loctn) { Sunspot::Util::Coordinates.new(latitude, longitude) }
+    # end
 
     def loctn
       [latitude, longitude].compact.join(", ")

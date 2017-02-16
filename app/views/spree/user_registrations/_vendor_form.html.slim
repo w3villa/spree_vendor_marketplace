@@ -1,0 +1,59 @@
+= form_for @user, html: {class: "custom-form"}, :as => :spree_user, url: spree.registration_path do |f|   
+  fieldset#password-credentials
+    legend Your Personal Details
+    .form-group.required style=("display: none;") 
+      label.col-sm-2.control-label Customer Group
+      .col-sm-10
+        .radio
+          label
+            input checked="checked" name="customer_group_id" type="radio" value="1" 
+            | Default
+    .form-group.required.clearfix
+      label.col-sm-2.control-label for="input-email"  First Name
+      .col-sm-10
+        = f.text_field :first_name, :class => 'form-control',:required => "", :tabindex => 1, :placeholder => Spree.t(:first_name)
+    .form-group.required.clearfix
+      label.col-sm-2.control-label for="input-email"  Last Name
+      .col-sm-10
+        = f.text_field :last_name, :class => 'form-control', :required => "", :tabindex => 1, :placeholder => Spree.t(:last_name)
+    .form-group.required.clearfix
+      label.col-sm-2.control-label for="input-email"  E-Mail
+      .col-sm-10
+        = f.email_field :email, :class => 'form-control', :required => "", :tabindex => 1, :placeholder => Spree.t(:email)
+    .form-group.required.clearfix
+      label.col-sm-2.control-label for="input-password"  Password
+      .col-sm-10
+        = f.password_field :password, :class => 'form-control', :required => "", :tabindex => 2, :placeholder => Spree.t(:password)
+    .form-group.required.clearfix
+      label.col-sm-2.control-label for="input-confirm"  Password Confirm
+      .col-sm-10
+        = f.password_field :password_confirmation, :class => 'form-control', :required => "", :tabindex => 2, :placeholder => Spree.t(:password)
+    / .form-group.required.clearfix
+    /   label.col-sm-2.control-label for="input-confirm"  Registration Type
+    /   .col-sm-10
+    /     span Vendor
+    = f.hidden_field :registration_type, :value => "vendor" 
+  .buttons
+    .form-group
+      label.t_and_c
+        = f.check_box :t_and_c_accepted, class: "t_and_c_ven"
+        |  I have read and agree to the 
+        = link_to "Privacy Policy", "#", class: "agree", style:"color:red;"
+      br
+      br
+      = f.submit Spree.t(:continue), :class => 'btn btn-lg btn-primary', :tabindex => 3, id: "continue-btn", disabled: true
+
+- content_for :js do 
+  javascript:
+    $(document).ready(function() {
+      $('#continue-btn').prop('disabled', true);
+      $('.t_and_c_ven').click(function() {
+        var checked = $('#spree_user_t_and_c_accepted').prop('checked');
+        if(checked){
+          $('#continue-btn').prop('disabled', false);
+        } else {
+          $('#continue-btn').prop('disabled', true);
+        }
+      });
+    })
+

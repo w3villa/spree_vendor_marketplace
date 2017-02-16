@@ -7,19 +7,19 @@
     .col-md-4.col-xs-12
       span.input-icon.icon-right
         = f.text_field :name, required: true, class: "form-control input-bg" 
-  .form-group
-    .col-md-2.col-xs-12
-      = f.label :logo, class: "control-label"
-    .col-md-4.col-xs-12
-      span
-        = f.file_field :logo, class: "form-control" 
-  .form-group
-    .col-md-2.col-xs-12
-      = f.label :certificate_of_authority,  class: "control-label"
-      span.required *
-    .col-md-4.col-xs-12
-      span
-        = f.file_field :certificate, required: true, class: "form-control" 
+  / .form-group
+  /   .col-md-2.col-xs-12
+  /     = f.label :logo, class: "control-label"
+  /   .col-md-4.col-xs-12
+  /     span
+  /       = f.file_field :logo, class: "form-control" 
+  / .form-group
+  /   .col-md-2.col-xs-12
+  /     = f.label :certificate_of_authority,  class: "control-label"
+  /     span.required *
+  /   .col-md-4.col-xs-12
+  /     span
+  /       = f.file_field :certificate, required: true, class: "form-control" 
   .form-group
     .col-md-2.col-xs-12
       = f.label :manager_name, class: "control-label"

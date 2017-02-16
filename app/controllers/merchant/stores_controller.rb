@@ -22,9 +22,9 @@ class Merchant::StoresController < Merchant::ApplicationController
 
   # GET /stores/new
   def new
-    if current_spree_user && current_spree_user.stores.present?
-      redirect_to current_spree_user.stores.first
-    elsif current_spree_user.registration_type == "vendor"
+    # if current_spree_user && current_spree_user.stores.present?
+    #   redirect_to current_spree_user.stores.first
+    # elsif current_spree_user.registration_type == "vendor"
       @store = Merchant::Store.new
      # @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
      @taxons = Spree::Taxon.where(parent_id: nil)
@@ -32,9 +32,9 @@ class Merchant::StoresController < Merchant::ApplicationController
     #   redirect_to spree.root_path
     # elsif current_spree_user.registration_type == nil
     #   redirect_to spree.root_path
-    else 
-      redirect_to merchant_stores_path
-    end
+    # else 
+    #   redirect_to merchant_stores_path
+    # end
   end
 
   # GET /stores/1/edit

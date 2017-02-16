@@ -1,0 +1,36 @@
+#container
+  .container
+    ul.breadcrumb
+      li
+        = link_to spree.root_path , "data-no-turbolink" => true do
+          i.fa.fa-home
+      li
+        = link_to "Home", root_path 
+      li.active Authentication
+    .row
+      #content.col-sm-9
+        h1 Register Account
+        p
+          | If you already have an account with us, please login at the
+          | &nbsp;
+          a href=spree.login_path Login
+        ul.nav.nav-tabs
+          li.active style="width: 50%;"
+            a data-toggle="tab" href="#customer"  Registration As Customer
+          li style="width: 50%;"
+            a data-toggle="tab" href="#vendor"  Registration As Vendor
+        .tab-content 
+          #customer.tab-pane.fade.in.active
+            = render partial: 'form'
+          #vendor.tab-pane.fade
+            = render partial: 'vendor_form'
+      column#column-right.col-sm-3.hidden-xs
+        h3 Account
+        .list-group
+          ul.list-item
+            li
+              a href=spree.login_path  Login
+            li
+              a href=spree.signup_path  Register
+            li
+              a href=spree.recover_password_path  Forgotten Password
