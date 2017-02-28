@@ -1,0 +1,13 @@
+
+= search_form_for @search, :url => spree.store_details_report_admin_reports_path, method: :post  do |s|
+  .form-group.date-range-filter
+    = label_tag nil, Spree.t(:date_range)
+    .date-range-filter.row
+      .col-md-6
+        = s.text_field :orders_completed_at_gt, :class => 'datepicker datepicker-from form-control', :value => datepicker_field_value(params[:q][:orders_completed_at_gt])
+      .col-md-6
+        = s.text_field :orders_completed_at_lt, :class => 'datepicker datepicker-to form-control', :value => datepicker_field_value(params[:q][:orders_completed_at_lt])
+
+
+  .form-actions
+    = button Spree.t(:search), 'search'

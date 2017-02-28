@@ -2,7 +2,8 @@ module Merchant
   class Store < ActiveRecord::Base
 
     self.table_name = "pyklocal_stores" 
-    acts_as_paranoid
+    # acts_as_paranoid
+    attr_accessor :email, :first_name, :last_name,:password
 
     before_destroy :deactive_store_products
 
@@ -150,7 +151,7 @@ module Merchant
 
       def notify_admin
         unless self.changes.include?(:active)
-          UserMailer.notify_store_save(self).deliver
+          # UserMailer.notify_store_save(self).deliver
         end
       end
 

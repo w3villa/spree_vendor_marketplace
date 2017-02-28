@@ -30,9 +30,6 @@
                 th Variants
                 th Quantity
                 th= sort_link @search, :total, "Amount"
-                th Delivery Type
-                th Driver Name
-                th Actions
             tbody
               - unless @orders.blank?
                 - @orders.each do |order|
@@ -53,23 +50,6 @@
                           td= line_item.variant.options_text
                           td= line_item.quantity
                           td= line_item.price.to_f
-                          td= line_item.delivery_type.try(:humanize)
-                          td= line_item.driver.try(:full_name) || "-"
-                          td.align-middle rowspan="#{order.get_store_line_items(@store.id).count}"
-                            - if line_item_ids.present? && order.state != "canceled"
-                              - if order.items_state(line_item_ids) == "packaging"
-                                = link_to "In process", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "ready_to_pick"), class: "btn btn-success", method: :put
-                              - elsif order.items_state(line_item_ids) == "ready_to_pick"
-                                = link_to "Ready For Pick Up", "#", class: "btn btn-success"
-                                / = link_to "Cancel", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "packaging"), class: "btn btn-default", method: :put, style: "margin-top: 5px;"
-                              - elsif order.items_state(line_item_ids) == "confirmed_pickup"
-                                = link_to "Waiting For Driver", spree.order_ready_to_pick_path(order, item_ids: line_item_ids, option: "out_for_delivery"), class: "btn btn-success", method: :put
-                              - elsif order.items_state(line_item_ids) == "out_for_delivery"
-                                = link_to "Out For Delivery", "#", class: "btn btn-success", disabled: true
-                              - else
-                                = link_to "Delivered", "#", class: "btn btn-success", disabled: true
-                            -elsif order.state == "canceled"
-                              = link_to "Canceled", "#", class: "btn btn-danger"
                         - else
                           tr
                             td= line_item.product.try(:name)
@@ -80,7 +60,7 @@
                             td= line_item.driver.try(:full_name) || "-"
               - else
                 tr
-                  td colspan="7"
+                  td colspan="6"
                     span No orders found.
         - if @orders.respond_to?(:num_pages)
           = paginate @orders

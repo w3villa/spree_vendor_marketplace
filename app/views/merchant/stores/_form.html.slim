@@ -22,6 +22,20 @@
   /       = f.file_field :certificate, required: true, class: "form-control" 
   .form-group
     .col-md-2.col-xs-12
+      = f.label "email *",  class: "control-label"
+      / span.required *
+    .col-md-4.col-xs-12
+      span
+        = f.text_field :email, required: true, class: "form-control" 
+
+  .form-group
+    .col-md-2.col-xs-12
+      = f.label "Password *",  class: "control-label"
+    .col-md-4.col-xs-12
+      span
+          = f.password_field :password, required: true, class: "form-control" 
+  .form-group
+    .col-md-2.col-xs-12
       = f.label :manager_name, class: "control-label"
       span.required *
     .col-md-2.col-xs-6

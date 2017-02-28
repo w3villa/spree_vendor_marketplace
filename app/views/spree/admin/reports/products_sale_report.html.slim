@@ -1,0 +1,39 @@
+- content_for :page_title do 
+  = link_to Spree.t(:reports), spree.admin_reports_url 
+  |/
+  = Spree.t(:products_sale)
+  / .pull-right
+    = link_to "Download As Excel", products_sale_report_admin_reports_path(download_excel: true, :format => :xls, q: params[:q]), class: "btn btn-primary"
+
+.well
+  = render :partial => 'spree/admin/shared/product_report'
+
+table.table.table-bordered.admin-report data-hook="sales_total"
+  thead
+    tr
+      th= "Order Number"
+      th= Spree.t(:product_name)
+      / th= sort_link @search, :master_default_price_amount, Spree.t(:master_price), {}, {title: 'admin_products_listing_price_title'} 
+      th= Spree.t(:price)
+      th= Spree.t(:quantity)
+      / th= sort_link @search, :line_items_count, Spree.t(:sales_total), {}, {title: 'line_items_count'}
+      th= Spree.t(:store)
+  tbody
+    - if @line_items.present?
+      - @line_items.each do |line_item|
+        tr
+          td= line_item.order.number
+          td= line_item.product.name
+          td= number_to_currency(line_item.price)
+          td= line_item.quantity
+          -if line_item.product.store.present?
+            td= line_item.product.store.name
+          - else
+            td= "NA"
+
+    - else
+      tr
+        td colspan="5" No sold products available.
+.pull-right
+  - if @line_items.respond_to?(:num_pages)
+    = paginate @line_items

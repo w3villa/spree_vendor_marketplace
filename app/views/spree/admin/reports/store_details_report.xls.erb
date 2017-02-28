@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Store Name</Data></Cell>
+        <Cell><Data ss:Type="String">Total Sale Amount</Data></Cell>
+        <Cell><Data ss:Type="String">Total Tax</Data></Cell>
+        <Cell><Data ss:Type="String">commission</Data></Cell>
+        <Cell><Data ss::Type="String">Return Amount</Data></Cell>
+        <Cell><Data ss::Type="String">Return Tax</Data></Cell>
+        <Cell><Data ss::Type="String">Amount Due</Data></Cell>
+      </Row>
+    <% @store_sale_array.each do |merchant| %>
+      <% commission = (( merchant[:sales_amount] *  Spree::Commission.last.percentage ) /100).round(2) %>
+      <% amount = (merchant[:sales_amount] - commission - merchant[:amount_return]) %>
+      <Row>
+        <Cell><Data ss:Type="String"><%= merchant[:name] %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= merchant[:sales_amount] %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= merchant[:tax] %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= commission %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= merchant[:amount_return] %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= merchant[:tax_return] %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= amount %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

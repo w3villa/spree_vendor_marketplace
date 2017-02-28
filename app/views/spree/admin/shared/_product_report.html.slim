@@ -1,0 +1,35 @@
+
+= form_tag   products_sale_report_admin_reports_path, {method: :get}
+  .row
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:start_date)
+      = text_field_tag :orders_completed_start ,@date1, class: "form-control"
+      = hidden_field_tag "range[from_date]", @date1
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:end_date)
+      = text_field_tag :orders_completed_end,@date2, class: "form-control"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:store_name)
+      = select_tag 'store_name',options_from_collection_for_select(@merchants,"id","name",@store),include_blank: true ,prompt: @store,class: "select2"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:category_name)
+      = select_tag 'category_name',options_from_collection_for_select(@taxons,"id","name"),include_blank: true ,prompt: @category,class: "select2"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:brand_name)
+      = select_tag 'brand_name',options_from_collection_for_select(@brand_names,"value","value"),include_blank: true,prompt: @brand ,class: "select2"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:user_email)
+      = text_field_tag :user_email,@email, class: "form-control"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:product_name)
+      = text_field_tag :product_name,@product_name, class: "form-control"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:min_price)
+      = text_field_tag :min_price,@min_price, class: "form-control"
+    .col-md-4.form-group
+      = label_tag nil, Spree.t(:max_price)
+      = text_field_tag :max_price,@max_price, class: "form-control"
+  .form-actions
+    =submit_tag 'Search', :class => 'btn btn-lg btn-success'
+
+

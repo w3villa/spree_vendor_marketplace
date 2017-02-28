@@ -10,26 +10,12 @@ class Merchant::ProductsController < Merchant::ApplicationController
 	def index
     p "______________________________________________________________________________________-"
     p params
-    p params.key?("active_tab")
-    @tab = params[:active_tab]
-    @search = Sunspot.search(Spree::Product) do
-      fulltext params[:q][:s] if params[:q] && params[:q][:s]
-      with(:visible, true)  if params[:active_tab] == "published" || !params.key?("active_tab")
-      with(:visible, false) if params[:active_tab] == "unpublished"
-      with(:store_id, current_spree_user.stores.first.try(:id))
-      paginate(:page => params[:page], :per_page => 10)
-      order_by(:created_at, :desc)
+   
+    if params[:q].present? && params[:q][:s].present?
+      @collection =  Spree::Product.where("name LIKE ? AND store_id = ?","%#{params[:q][:s]}%",current_spree_user.stores.first.id).order("created_at desc").page(params[:page]).per(15)
+    else
+      @collection =  Spree::Product.where(store_id: current_spree_user.stores.first.id).order("created_at desc").page(params[:page]).per(15)
     end
-    # @search_1 = Sunspot.search(Spree::Product) do
-    #   fulltext params[:q][:s] if params[:q] && params[:q][:s]
-    #   with(:visible, false)  
-    #   with(:store_id, current_spree_user.stores.first.try(:id))
-    #   paginate(:page => params[:page], :per_page => 15)
-    #   order_by(:created_at, :desc)
-    # end
-    @collection =  @search.results
-    # @collection_1 =  @search_1.results
-    # p @collection
     @is_owner = is_owner?(current_spree_user.stores.first)
   end
 
@@ -136,30 +122,30 @@ class Merchant::ProductsController < Merchant::ApplicationController
     #@product = Spree::Product.where(slug: params[:id]).first || Spree::Product.where(slug: params[:product_id]).first
   end
 
-  protected
+  # protected
 
-    def collection
-      return @collection if @collection.present?
-      params[:q] ||= {}
-      params[:q][:deleted_at_null] ||= "1"
+  #   def collection
+  #     return @collection if @collection.present?
+  #     params[:q] ||= {}
+  #     params[:q][:deleted_at_null] ||= "1"
 
-      params[:q][:s] ||= "name asc"
-      @collection = super
-      # Don't delete params[:q][:deleted_at_null] here because it is used in view to check the
-      # checkbox for 'q[deleted_at_null]'. This also messed with pagination when deleted_at_null is checked.
-      if params[:q][:deleted_at_null] == '0'
-        @collection = @collection.with_deleted
-      end
-      # @search needs to be defined as this is passed to search_form_for
-      # Temporarily remove params[:q][:deleted_at_null] from params[:q] to ransack products.
-      # This is to include all products and not just deleted products.
-      @search = @collection.ransack(params[:q].reject { |k, _v| k.to_s == 'deleted_at_null' })
-      @collection = @search.result.
-            distinct_by_product_ids(params[:q][:s]).
-            includes(product_includes).
-            page(params[:page]).
-            per(params[:per_page] || Spree::Config[:admin_products_per_page])
-      @collection
-    end
+  #     params[:q][:s] ||= "name asc"
+  #     @collection = super
+  #     # Don't delete params[:q][:deleted_at_null] here because it is used in view to check the
+  #     # checkbox for 'q[deleted_at_null]'. This also messed with pagination when deleted_at_null is checked.
+  #     if params[:q][:deleted_at_null] == '0'
+  #       @collection = @collection.with_deleted
+  #     end
+  #     # @search needs to be defined as this is passed to search_form_for
+  #     # Temporarily remove params[:q][:deleted_at_null] from params[:q] to ransack products.
+  #     # This is to include all products and not just deleted products.
+  #     @search = @collection.ransack(params[:q].reject { |k, _v| k.to_s == 'deleted_at_null' })
+  #     @collection = @search.result.
+  #           distinct_by_product_ids(params[:q][:s]).
+  #           includes(product_includes).
+  #           page(params[:page]).
+  #           per(params[:per_page] || Spree::Config[:admin_products_per_page])
+  #     @collection
+  #   end
 
 end

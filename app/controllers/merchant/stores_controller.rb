@@ -2,7 +2,6 @@ class Merchant::StoresController < Merchant::ApplicationController
 
 	before_filter :authenticate_user!, except: [:show, :new, :create, :index]
   before_action :set_store, only: [:show, :edit, :update, :destroy]
-  before_action :validate_token, only: [:edit, :update] 
   before_action :perform_search, only: [:show]
 
 	def index
@@ -15,31 +14,46 @@ class Merchant::StoresController < Merchant::ApplicationController
 	end
 
 	def show
-    #@products = @store.spree_products.page(params[:page]).per(12).order("created_at desc")
-    @products = @search.results
+    # @products = @store.spree_products.page(params[:page]).per(12).order("created_at desc")
+    # p "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    # p @products
+
+    if params[:q].present? && params[:q][:search].present?
+      @products =  Spree::Product.where("name LIKE ? AND store_id = ?","%#{params[:q][:search]}%",current_spree_user.stores.first.id).order("created_at desc").page(params[:page]).per(15)
+    else
+      @products =  Spree::Product.where(store_id: @store.id).order("created_at desc").page(params[:page]).per(15)
+    end
     @is_owner = is_owner?(@store)
   end
 
   # GET /stores/new
   def new
-    # if current_spree_user && current_spree_user.stores.present?
-    #   redirect_to current_spree_user.stores.first
-    # elsif current_spree_user.registration_type == "vendor"
-      @store = Merchant::Store.new
-     # @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
-     @taxons = Spree::Taxon.where(parent_id: nil)
-    # elsif current_spree_user.registration_type == "customer"
-    #   redirect_to spree.root_path
-    # elsif current_spree_user.registration_type == nil
-    #   redirect_to spree.root_path
-    # else 
-    #   redirect_to merchant_stores_path
-    # end
+    begin
+      #  p current_spree_user
+      # if current_spree_user && current_spree_user.stores.present?
+      #   redirect_to current_spree_user.stores.first
+      # elsif current_spree_user.registration_type == "vendor"
+        @store = Merchant::Store.new
+        p "8888888888888888888"
+        p @store
+        @taxons = Spree::Taxon.where(parent_id: nil)
+        # @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
+        # @taxons = Spree::Taxon.where(parent_id: nil)
+      # elsif current_spree_user.registration_type == "customer"
+      #   redirect_to spree.root_path
+      # elsif current_spree_user.registration_type == nil
+        # redirect_to spree.root_path
+      # else 
+      #   redirect_to merchant_stores_path
+      # end
+    rescue Exception => e
+      p e.message
+      
+    end
   end
 
   # GET /stores/1/edit
   def edit
-    p "edit called"
     if @store.id != current_spree_user.stores.first.try(:id) && !current_spree_user.has_spree_role?('admin')
       raise CanCan::AccessDenied.new
     end
@@ -50,18 +64,25 @@ class Merchant::StoresController < Merchant::ApplicationController
   # POST /stores
   # POST /stores.json
   def create
-    @store = Merchant::Store.new(store_params)
-    @store.attributes = {store_users_attributes: [spree_user_id: current_spree_user.id], active: true}
-    respond_to do |format|
-      if @store.save
-        format.html { redirect_to merchant_store_url(id: @store.slug, anchor: "map"), notice: 'Store approval is pending' }
-        format.json { render action: 'show', status: :created, location: @store }
-      else
-        #@taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
-        @taxons = Spree::Taxon.where(parent_id: nil).first.id
+    @user = Spree::User.new(user_params)
+    if @user.save
+      @store = Merchant::Store.new(store_params)
+      @store.attributes = {store_users_attributes: [spree_user_id: @user.id], active: true}
+      respond_to do |format|
+        if @store.save
+          format.html { redirect_to merchant_store_url(id: @store.slug, anchor: "map"), notice: 'Store approval is pending' }
+          format.json { render action: 'show', status: :created, location: @store }
+        else
+          #@taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
+          @taxons = Spree::Taxon.where(parent_id: nil).first.id
+          format.html { render action: 'new' }
+          format.json { render json: @store.errors, status: :unprocessable_entity }
+          flash[:error] = @store.errors.full_messages.join(", ")
+        end
+      end
+    else
+      respond_to do |format|
         format.html { render action: 'new' }
-        format.json { render json: @store.errors, status: :unprocessable_entity }
-        flash[:error] = @store.errors.full_messages.join(", ")
       end
     end
   end
@@ -75,7 +96,7 @@ class Merchant::StoresController < Merchant::ApplicationController
     respond_to do |format|
       if @store.update_attributes(store_params)
         format.html { redirect_to @store, notice: 'Store was successfully updated.'  }
-        @store.email_tokens.last.update_attributes(is_valid: false)
+        # @store.email_tokens.last.update_attributes(is_valid: false)
       else
         format.html { render action: 'edit' }
       end
@@ -112,22 +133,8 @@ class Merchant::StoresController < Merchant::ApplicationController
       params.require(:merchant_store).permit(:name, :estimated_delivery_time, :active, :certificate, :payment_mode, :description, :manager_first_name, :manager_last_name, :phone_number, :store_type, :street_number, :city, :state, :zipcode, :country, :site_url, :terms_and_condition, :payment_information, :logo, spree_taxon_ids: [], store_users_attributes: [:spree_user_id, :store_id, :id])
     end
 
-    def perform_search
-        #per_page = params[:q] && params[:q][:per_page] ? params[:q][:per_page] : 12
-      store_id = Merchant::Store.where(slug: params[:id]).first.id
-      @search = Sunspot.search(Spree::Product) do 
-        fulltext params[:q][:search] if params[:q] && params[:q][:search]
-        paginate(:page => params[:page], :per_page => 12)
-        with(:store_id, store_id) 
-        with(:buyable, :true)
-      end
-    end
-
-    def validate_token
-      @store = Merchant::Store.find_by_slug(params[:id])
-      if @store.email_tokens.where(is_valid: true, token: params[:token]).blank?
-        redirect_to merchant_store_url(@store), flash: {error: "Please use the link provided in mail to edit the store, token was invalid"}
-      end
+    def user_params
+      params.require(:merchant_store).permit(:email,:password)
     end
 
 end

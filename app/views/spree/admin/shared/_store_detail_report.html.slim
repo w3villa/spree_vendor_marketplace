@@ -1,0 +1,16 @@
+
+= form_tag  store_details_report_admin_reports_path, {method: :get}
+  .row.form-group
+    .col-md-6
+      = label_tag nil, Spree.t(:start_date)
+      = text_field_tag :orders_completed_start ,@date1, class: "form-control"
+    .col-md-6
+      = label_tag nil, Spree.t(:end_date)
+      = text_field_tag :orders_completed_end, @date2, class: "form-control"
+  .form-actions
+    =submit_tag 'Search', :class => 'btn btn-lg btn-success'
+
+-content_for :js 
+	javascript:
+
+		$('.order_range').datapicker();

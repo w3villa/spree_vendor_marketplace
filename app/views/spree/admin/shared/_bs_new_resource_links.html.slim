@@ -1,0 +1,5 @@
+.col-md-12
+  .form-buttons.filter-actions.actions data-hook="buttons" 
+    = button Spree.t('actions.create'), class: 'btn btn-success' 
+    |      
+    = link_to_with_icon 'icon-remove', Spree.t('actions.cancel'), 'collection_url', :class => 'btn btn-default margin-left'

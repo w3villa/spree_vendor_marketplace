@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-	 
   namespace :merchant do
     get "stores/amazon/fetch", to: "amazon_products#fetch", as: "store_amazon_product"
     get "/", to: "home#index"
@@ -49,3 +48,21 @@ Rails.application.routes.draw do
   end
 
 end
+
+  Spree::Core::Engine.add_routes do 
+    namespace :admin do 
+      resources :commissions
+
+    resources :reports, only: [:index] do
+      collection do
+        get :products_sale_report
+        post :products_sale_report
+        get :store_sale_product
+        post :products_sale_report
+        get :store_details_report
+        post :store_details_report
+      end
+    end
+    end
+    
+  end

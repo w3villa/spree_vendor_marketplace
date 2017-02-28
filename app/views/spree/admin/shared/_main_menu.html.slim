@@ -1,0 +1,21 @@
+- if can? :admin, Spree::Order
+  ul.nav.nav-sidebar
+    = tab *Spree::BackendConfiguration::ORDER_TABS, icon: 'shopping-cart'
+- if can?(:admin, Spree::ReturnAuthorization) || can?(:admin, Spree::CustomerReturn)
+  ul.nav.nav-sidebar
+    = main_menu_tree Spree.t(:returns), icon: "transfer", sub_menu: "returns", url: "#sidebar-returns"
+- if can? :admin, Spree::Product
+  ul.nav.nav-sidebar
+    = main_menu_tree Spree.t(:products), icon: "th-large", sub_menu: "product", url: "#sidebar-product"
+- if can? :admin, Spree::Admin::ReportsController
+  ul.nav.nav-sidebar
+    = tab *Spree::BackendConfiguration::REPORT_TABS, icon: 'file'
+- if can? :admin, Spree::Promotion
+  ul.nav.nav-sidebar
+    = main_menu_tree Spree.t(:promotions), icon: "gift", sub_menu: "promotion", url: "#sidebar-promotions"
+- if Spree.user_class && can?(:admin, Spree.user_class)
+  ul.nav.nav-sidebar
+    = tab *Spree::BackendConfiguration::USER_TABS, url: spree.admin_users_path, icon: 'user'
+- if can? :admin, current_store
+  ul.nav.nav-sidebar
+    = main_menu_tree Spree.t(:configurations), icon: "wrench", sub_menu: "configuration", url: "#sidebar-configuration"

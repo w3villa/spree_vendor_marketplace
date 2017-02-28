@@ -19,11 +19,17 @@ module SpreeVendorMarketplace
 
      def add_stylesheets
        inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require merchant_section\n", before: /\*\//, verbose: true
+       inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require merchant_skin\n", before: /\*\//, verbose: true
+       inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require bootstrap_and_overrides\n", before: /\*\//, verbose: true
      end
 
     def add_javascripts
       append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require merchant\n"
       append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require merchant\n"
+      append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require jquery.raty\n"
+      append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require custom\n"
+      append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require jquery.raty\n"
+      append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require custom\n"
     end
 
      #  def copy_migrations
