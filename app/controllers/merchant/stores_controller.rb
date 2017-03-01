@@ -2,15 +2,18 @@ class Merchant::StoresController < Merchant::ApplicationController
 
 	before_filter :authenticate_user!, except: [:show, :new, :create, :index]
   before_action :set_store, only: [:show, :edit, :update, :destroy]
-  before_action :perform_search, only: [:show]
 
 	def index
-		@stores = current_spree_user.try(:stores)
-    if @stores.present?
-      redirect_to @stores.first
+    if current_spree_user.present?
+  		@stores = current_spree_user.try(:stores)
+      if @stores.present?
+        redirect_to @stores.first
+      else
+        redirect_to new_merchant_store_path
+      end  
     else
-      redirect_to new_merchant_store_path
-    end     
+      redirect_to spree.root_path, notice: "you are not logged in"
+    end   
 	end
 
 	def show
@@ -29,23 +32,16 @@ class Merchant::StoresController < Merchant::ApplicationController
   # GET /stores/new
   def new
     begin
-      #  p current_spree_user
-      # if current_spree_user && current_spree_user.stores.present?
-      #   redirect_to current_spree_user.stores.first
-      # elsif current_spree_user.registration_type == "vendor"
-        @store = Merchant::Store.new
-        p "8888888888888888888"
-        p @store
-        @taxons = Spree::Taxon.where(parent_id: nil)
-        # @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
-        # @taxons = Spree::Taxon.where(parent_id: nil)
-      # elsif current_spree_user.registration_type == "customer"
-      #   redirect_to spree.root_path
-      # elsif current_spree_user.registration_type == nil
-        # redirect_to spree.root_path
-      # else 
-      #   redirect_to merchant_stores_path
-      # end
+      if current_spree_user.present?
+        if current_spree_user.stores.present?
+          redirect_to current_spree_user.stores.first
+        else
+          @store = Merchant::Store.new()
+          @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
+        end
+      else
+        redirect_to spree.root_path, notice: "you are not logged in"
+      end
     rescue Exception => e
       p e.message
       
@@ -64,27 +60,39 @@ class Merchant::StoresController < Merchant::ApplicationController
   # POST /stores
   # POST /stores.json
   def create
-    @user = Spree::User.new(user_params)
-    if @user.save
-      @store = Merchant::Store.new(store_params)
-      @store.attributes = {store_users_attributes: [spree_user_id: @user.id], active: true}
-      respond_to do |format|
-        if @store.save
-          format.html { redirect_to merchant_store_url(id: @store.slug, anchor: "map"), notice: 'Store approval is pending' }
-          format.json { render action: 'show', status: :created, location: @store }
-        else
-          #@taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
-          @taxons = Spree::Taxon.where(parent_id: nil).first.id
-          format.html { render action: 'new' }
-          format.json { render json: @store.errors, status: :unprocessable_entity }
-          flash[:error] = @store.errors.full_messages.join(", ")
-        end
-      end
-    else
-      respond_to do |format|
+    @store = Merchant::Store.new(store_params)
+    @store.attributes = {store_users_attributes: [spree_user_id: current_spree_user.id], active: true}
+    respond_to do |format|
+      if @store.save
+        format.html { redirect_to merchant_store_url(id: @store.slug, anchor: "map"), notice: 'Store approval is pending' }
+        format.json { render action: 'show', status: :created, location: @store }
+      else
+        @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
         format.html { render action: 'new' }
+        format.json { render json: @store.errors, status: :unprocessable_entity }
       end
     end
+    # @user = Spree::User.new(user_params)
+    # if @user.save
+    #   @store = Merchant::Store.new(store_params)
+    #   @store.attributes = {store_users_attributes: [spree_user_id: @user.id], active: true}
+    #   respond_to do |format|
+    #     if @store.save
+    #       format.html { redirect_to merchant_store_url(id: @store.slug, anchor: "map"), notice: 'Store approval is pending' }
+    #       format.json { render action: 'show', status: :created, location: @store }
+    #     else
+    #       #@taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
+    #       @taxons = Spree::Taxon.where(parent_id: nil).first.id
+    #       format.html { render action: 'new' }
+    #       format.json { render json: @store.errors, status: :unprocessable_entity }
+    #       flash[:error] = @store.errors.full_messages.join(", ")
+    #     end
+    #   end
+    # else
+    #   respond_to do |format|
+    #     format.html { render action: 'new' }
+    #   end
+    # end
   end
 
   # PATCH/PUT /stores/1

@@ -14,27 +14,18 @@
 table.table.table-bordered.admin-report data-hook="sales_total"
   thead
     tr
-      th
       th= Spree.t(:store_name)
       th= Spree.t(:total_sale_amount)
       th= Spree.t(:total_tax)
       th= Spree.t(:commission)
-      th= "Return Amount"
-      th= "Return Tax"
-      th= "Amount Due"
   tbody
     - @store_sale_array.each do |merchant|
-      - commission = (( merchant[:sales_amount] *  Spree::Commission.last.percentage ) /100).round(2)
-      tr id = merchant[:id]
-        td 
-          span.icon.icon-plus id = merchant[:id]
-        td = merchant[:name]
-        td = merchant[:sales_amount]
-        td = merchant[:tax]
-        td = commission
-        td = merchant[:amount_return]
-        td = merchant[:tax_return]
-        td = (merchant[:sales_amount] - commission - merchant[:amount_return]).round(2)
+        - commission = (( merchant[:sales_amount] *  Spree::Commission.last.percentage ) /100).round(2)
+        tr
+          td = merchant[:name]
+          td = merchant[:sales_amount]
+          td = merchant[:tax]
+          td = commission
 
 .store-report-pagination
   - i = @total_merchant_count

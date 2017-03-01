@@ -10,6 +10,11 @@ $.ajaxSetup({
 });
 
 
+ window.onload = function () {
+    $('#orders_completed_start').datepicker({ dateFormat: 'dd-mm-yy' });
+     $('#orders_completed_end').datepicker({ dateFormat: 'dd-mm-yy' });
+  }
+
 $(document).ready(function() {
   var Store = function(){
     this.init();

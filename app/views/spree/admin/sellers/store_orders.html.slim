@@ -1,0 +1,20 @@
+= render partial: 'spree/admin/sellers/sidebar', locals: { current: :store_orders }
+- content_for :page_title do
+  |  
+  = @seller.email
+table.table.table_striped
+	thead
+		tr
+			th Order Number
+			th Item Count
+	tbody
+		- unless @store_order.blank?
+			- @store_order.each do |order|
+				- if order.present?
+					tr
+						td= link_to order.number, spree.edit_admin_order_path(order)
+						td= order.quantity
+		- else
+			tr
+				td colspan="2"
+					span No Order placed by this Store.

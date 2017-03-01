@@ -7,7 +7,6 @@ html lang="#{I18n.locale}"
     meta content="width=device-width, initial-scale=1.0" name="viewport" 
     meta content="#{yield(:meta_description)}" name="description" 
     meta content="#{yield(:meta_keywords)}" name="keywords" 
-    title= content_for?(:title) ? yield(:title) : "Pyklocal"
     = csrf_meta_tags
     = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => false
     link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" 

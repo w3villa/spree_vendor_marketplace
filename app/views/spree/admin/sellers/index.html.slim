@@ -1,0 +1,41 @@
+- content_for :page_title do
+  = Spree.t(:users)
+- content_for :page_actions do
+  
+- content_for :table_filter_title do
+  = Spree.t(:search)
+- content_for :table_filter do
+  div data-hook="admin_users_index_search" 
+    = search_form_for [:admin, @search], url: spree.admin_users_url do |f|
+      .form-group
+        = f.label Spree.t(:email)
+        = f.text_field :email_cont, class: "form-control js-quick-search-target"
+      / .row
+      /   .col-md-6
+      /     .form-group
+      /       = f.label Spree.t(:first_name)
+      /       = f.text_field :first_name_cont, :class => 'form-control'
+      /   .col-md-6
+      /     .form-group
+      /       = f.label Spree.t(:last_name)
+      /       = f.text_field :last_name_cont, :class => 'form-control'
+      .form-actions data-hook="admin_users_index_search_buttons" 
+        = button Spree.t(:search), 'search'
+table#listing_users.table data-hook="" 
+  thead
+    tr data-hook="admin_users_index_headers" 
+      th
+        = sort_link @search,:email, Spree.t(:user), {}, {:title => 'users_email_title'}
+      th
+        = Spree.t(:sold_amount)
+      th.actions data-hook="admin_users_index_header_actions" 
+  tbody
+    - @collection.each do |merchant|
+      - if merchant.stores.present?
+        tr data-hook="admin_users_index_rows" id=("#{spree_dom_id merchant}") 
+          td.user_email= link_to merchant.email, edit_admin_seller_url(merchant)
+          td.user_email= Spree::LineItem.joins(:product).where(spree_products:{store_id: merchant.stores.first.id}).collect{|obj| obj.price * obj.quantity}.sum.to_f.round(2)
+          td.actions.actions-2.text-right data-hook="admin_users_index_row_actions" 
+            = link_to_edit merchant, :no_text => true
+            = link_to_delete merchant, :no_text => true
+= paginate @collection

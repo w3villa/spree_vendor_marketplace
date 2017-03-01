@@ -53,16 +53,23 @@ end
     namespace :admin do 
       resources :commissions
 
-    resources :reports, only: [:index] do
-      collection do
-        get :products_sale_report
-        post :products_sale_report
-        get :store_sale_product
-        post :products_sale_report
-        get :store_details_report
-        post :store_details_report
+      resources :reports, only: [:index] do
+        collection do
+          get :products_sale_report
+          post :products_sale_report
+          get :store_sale_product
+          post :products_sale_report
+          get :store_details_report
+          post :store_details_report
+        end
       end
-    end
+      resources :sellers do 
+        resources :payment_preferences
+        get :stores
+        resources :payment_histories
+        get :store_orders
+        delete :delete_store
+      end
     end
     
   end

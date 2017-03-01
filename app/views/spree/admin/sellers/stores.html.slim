@@ -1,0 +1,21 @@
+= render partial: 'spree/admin/sellers/sidebar', locals: { current: :stores }
+- content_for :page_title do
+  |  
+  = @seller.email
+table.table.table-striped
+	thead
+		tr
+			th Name
+			th Products Count
+			th
+	tbody
+		- unless @store.blank?
+			tr
+				th= link_to @store.name, main_app.merchant_store_url(@store)
+				th= @products.count
+				th= link_to admin_seller_delete_store_url, class: "btn btn-danger", method: :delete do 
+					i.icon-close Delete
+		- else
+			tr
+				td colspan="2"
+					span No store created by this merchant.

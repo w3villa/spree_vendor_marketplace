@@ -1,0 +1,16 @@
+- content_for :page_actions do 
+  = button_link_to Spree.t(:back_to_sellers_list), spree.admin_sellers_path, class: "btn-primary", icon: "arrow-left" 
+
+- content_for :sidebar do 
+  ul.nav.nav-pills.nav-stacked [data-hook= "admin_user_tab_options"]
+    li class=(current == :account ? 'active' : '')
+      = link_to_with_icon 'user', Spree.t(:"admin.user.account"), spree.edit_admin_seller_path(@seller) 
+    / li class=(current == :payment_preference ? 'active' : '')
+      = link_to_with_icon 'money', Spree.t(:"admin.user.payment_preference"), spree.admin_seller_payment_preferences_path(@seller) 
+    / li class=(current == :payment_histories ? 'active' : '')
+      = link_to_with_icon 'money', Spree.t(:"admin.user.payment_histories"), spree.admin_seller_payment_histories_path(@seller) 
+    li class=(current == :stores ? 'active' : '')
+      = link_to_with_icon 'shopping-cart', Spree.t(:"admin.user.stores"), admin_seller_stores_path(@seller) 
+    li class=(current == :store_orders ? 'active' : '')
+      = link_to_with_icon 'shopping-cart', Spree.t(:"admin.user.store_orders"), admin_seller_store_orders_path(@seller)
+    

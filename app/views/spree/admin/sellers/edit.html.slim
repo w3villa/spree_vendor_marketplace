@@ -1,0 +1,16 @@
+= render partial: 'spree/admin/sellers/sidebar', locals: { current: :account }
+- content_for :page_title do
+  |  
+  = @seller.email
+.panel.panel-default data-hook="admin_user_edit_general_settings" 
+  .panel-heading
+    h1.panel-title
+      = Spree.t(:general_settings)
+  .panel-body
+    div data-hook="admin_user_edit_form_header" 
+      = render partial: 'spree/admin/shared/error_messages', locals: { target: @seller }
+    div data-hook="admin_user_edit_form" 
+      = form_for [:admin, @seller], as: :seller, url: spree.admin_seller_url(@seller), method: :put do |f|
+        = render partial: 'form', locals: { f: f }
+        div data-hook="admin_user_edit_form_button" 
+          = render partial: 'spree/admin/shared/edit_resource_links', locals: { collection_url: spree.admin_sellers_url }
