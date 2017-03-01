@@ -34,14 +34,14 @@
               - unless @orders.blank?
                 - @orders.each do |order|
                   - if order.completed?
-                    - line_item_ids = order.get_home_delivery_line_item_ids(@store.id)
+                    / - line_item_ids = order.get_home_delivery_line_item_ids(@store.id)
                     tr
                       td.align-middle rowspan="#{order.get_store_line_items(@store.id).count}"
                         / = link_to order.try(:number), edit_merchant_order_path(order)
-                        - if order.get_store_delivered_line_items(@store.id).count == line_item_ids.count
-                         = link_to order.try(:number), merchant_order_customer_return_items_path(order), title: "Return Order"
-                        - else
-                          = order.try(:number)
+                        / - if order.get_store_delivered_line_items(@store.id).count == line_item_ids.count
+                         / = link_to order.try(:number), merchant_order_customer_return_items_path(order), title: "Return Order"
+                          / - else
+                        = order.try(:number)
                       td rowspan="#{order.get_store_line_items(@store.id).count}"
                         = order.completed_at.strftime("%d-%m-%Y")
                       - order.get_store_line_items(@store.id).each_with_index do |line_item, index|
