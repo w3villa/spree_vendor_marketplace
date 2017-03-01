@@ -32,8 +32,18 @@ module Merchant
     after_save :notify_admin
     # after_create :notify_user
 
+      has_attached_file :logo,
+                      styles: { mini: '48x48>', small: '100x100>', product: '240x240>', large: '600x600>' },
+                      default_style: :product,
+                      url: '/stores/:id/:style/:basename.:extension',
+                      path: ':rails_root/public/stores/:id/:style/:basename.:extension' ,
+                      convert_options: { all: '-strip -auto-orient -colorspace sRGB' }
+      validates_attachment :logo,
+        :presence => true,
+        :content_type => { :content_type => %w(image/jpeg image/jpg image/png image/gif) }
+
     # has_attached_file :logo,  
-    #   Pyklocal::Configuration.paperclip_options[:stores][:logo]
+      # Pyklocal::Configuration.paperclip_options[:stores][:logo]
     # validates_attachment :logo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
     # has_attached_file :certificate,  
