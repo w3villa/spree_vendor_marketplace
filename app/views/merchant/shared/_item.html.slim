@@ -14,9 +14,9 @@
         = number_to_currency(product.price)
       .buy-now
         - if @is_owner
-          = link_to "Edit", edit_merchant_product_path(product.slug), class: "btn btn-default btn-lg", "data-no-turbolink" => true
+          = link_to "Edit", edit_merchant_product_path(product.slug), class: "btn btn-primary", "data-no-turbolink" => true
         - elsif current_spree_user && current_spree_user.has_spree_role?("admin")
-          = link_to "Edit as admin", spree.edit_admin_product_path(product), class: "btn btn-default", "data-no-turbolink" => true
+          = link_to "Edit as admin", spree.edit_admin_product_path(product), class: "btn btn-primary", "data-no-turbolink" => true
         - else
           = form_for :order, url: spree.populate_orders_path do |f|
             input type= 'hidden' name= 'quantity' value= 1

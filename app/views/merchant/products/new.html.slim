@@ -67,20 +67,20 @@
                         = link_to merchant_products_path, class: "btn btn-default" do 
                           span.fa.fa-arrow-left
                           |&nbsp; Cancel
-            .col-sm-6
-              h3 OR
-              br
-              label Bulk Upload
-              br
-              = form_tag bulk_upload_merchant_products_path, method: :post, multipart: true do 
-                .form-group
-                  = file_field_tag :file, class: "form-control"
-                .form-group
-                  = submit_tag "Import", class: "btn btn-primary"
-                  span
-                    = link_to sample_csv_merchant_products_path, class: "margin-left" do
-                      span.fa.fa-download
-                      |  Sample CSV
+            / .col-sm-6
+            /   h3 OR
+            /   br
+            /   label Bulk Upload
+            /   br
+            /   = form_tag bulk_upload_merchant_products_path, method: :post, multipart: true do 
+            /     .form-group
+            /       = file_field_tag :file, class: "form-control"
+            /     .form-group
+            /       = submit_tag "Import", class: "btn btn-primary"
+            /       span
+            /         = link_to sample_csv_merchant_products_path, class: "margin-left" do
+            /           span.fa.fa-download
+            /           |  Sample CSV
 
 - content_for :js do
   javascript:

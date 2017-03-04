@@ -13,14 +13,12 @@ module Spree
 	  end
 
 	  def destroy_store
-	   # if stores.present?
-	      stores.first.destroy
-    	#end
+	    stores.first.destroy
  		end
 
    def notify_store_destroy
       #if self.has_store
-        UserMailer.notify_user_store_destroy(self).deliver_now
+        # UserMailer.notify_user_store_destroy(self).deliver_now
       #end
     end
 		

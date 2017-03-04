@@ -20,7 +20,6 @@ module SpreeVendorMarketplace
      def add_stylesheets
        inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require merchant_section\n", before: /\*\//, verbose: true
        inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require merchant_skin\n", before: /\*\//, verbose: true
-       inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require bootstrap_and_overrides\n", before: /\*\//, verbose: true
      end
 
     def add_javascripts

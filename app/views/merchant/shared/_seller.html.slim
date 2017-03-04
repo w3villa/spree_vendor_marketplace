@@ -61,19 +61,19 @@ br
 
       - if current_spree_user.has_spree_role?("merchant")
 
-        = link_to edit_merchant_store_path(current_spree_user.stores.first), class: " store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+        = link_to edit_merchant_store_path(current_spree_user.stores.first), class: " store-link btn-primary btn-lg btn-block text-left btn-border-radius store-sidebar", "data-no-turbolink" => true, title: title_text do
           .fa.fw &#xf055;
           | Edit Store Information
 
-        = link_to new_merchant_product_path, class: " store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+        = link_to new_merchant_product_path, class: " store-link btn-primary btn-lg btn-block text-left btn-border-radius store-sidebar", "data-no-turbolink" => true, title: title_text do
           .fa.fw &#xf055;
           | Add Products
 
-        = link_to merchant_products_path, class: " store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+        = link_to merchant_products_path, class: " store-link btn-primary btn-lg btn-block text-left btn-border-radius store-sidebar", "data-no-turbolink" => true, title: title_text do
           .fa.fw &#xf15c;
           | View and edit all Products
 
-        = link_to merchant_store_orders_path(@store.slug), class: "store-link btn-default btn-lg btn-block text-left btn-border-radius store-btn", "data-no-turbolink" => true, title: title_text do
+        = link_to merchant_store_orders_path(@store.slug), class: "store-link btn-primary btn-lg btn-block text-left btn-border-radius store-sidebar store-sidebar ", "data-no-turbolink" => true, title: title_text do
           .fa.fw &#xf07a;
           | View Orders
 

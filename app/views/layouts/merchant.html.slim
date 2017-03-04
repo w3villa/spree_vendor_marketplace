@@ -15,6 +15,7 @@ html lang="#{I18n.locale}"
     = yield :css
     = yield :head
   body class=("with-footer #{body_class}") data-hook="body" id=("#{@body_id || 'default'}") 
+    = render partial: "spree/shared/head"
     = render partial: "spree/shared/header"
     #main-body.container-fluid
       - if false

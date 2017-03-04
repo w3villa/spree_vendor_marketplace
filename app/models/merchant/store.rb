@@ -2,14 +2,10 @@ module Merchant
   class Store < ActiveRecord::Base
 
     self.table_name = "pyklocal_stores" 
-    # acts_as_paranoid
-    attr_accessor :email, :first_name, :last_name,:password
 
     before_destroy :deactive_store_products
 
     validates :name, :manager_first_name, :manager_last_name, :phone_number, presence: true
-    # validates :phone_number, numericality: { only_integer: true }
-    # validates :terms_and_condition, acceptance: { accept: true }
     
   	has_many :store_users, dependent: :delete_all, foreign_key: :store_id, class_name: "Merchant::StoreUser"
     has_many :spree_users, through: :store_users
@@ -42,23 +38,14 @@ module Merchant
         :presence => true,
         :content_type => { :content_type => %w(image/jpeg image/jpg image/png image/gif) }
 
-    # has_attached_file :logo,  
-      # Pyklocal::Configuration.paperclip_options[:stores][:logo]
-    # validates_attachment :logo, content_type: { content_type: /\Aimage\/.*\Z/ }
-
-    # has_attached_file :certificate,  
-    #   Pyklocal::Configuration.paperclip_options[:stores][:logo]
-    # validates_attachment :certificate, content_type: { content_type: /\Aimage\/.*\Z/ }
-
+  
     extend FriendlyId
     friendly_id :name, use: :slugged
 
     def deactive_store_products
-      p "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       unless self.spree_products.blank?
-        p "***************^^^^^^^^**********************"
         self.spree_products.each do |product|
-          product.update_attributes(buyable: false)
+          product.destroy
         end
       end
     end
