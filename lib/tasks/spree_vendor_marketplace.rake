@@ -4,7 +4,7 @@ namespace :spree_vendor_marketplace do
     require File.join(Rails.root, 'config', 'environment')
   end
 
-  desc "Creates wholesale role"
+  desc "Creates merchant role"
   task :create_role do
     load_environment
 

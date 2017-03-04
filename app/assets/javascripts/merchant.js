@@ -1,7 +1,5 @@
 //= require jquery.raty.js
-//= require noty/jquery.noty
-//= require noty/layouts/topCenter
-//= require noty/themes/default
+
 
 $.ajaxSetup({
   headers: {

@@ -35,5 +35,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sass-rails"
   spec.add_development_dependency "less-rails"
   spec.add_development_dependency "slim-rails"
+  spec.add_development_dependency "twitter-bootstrap-rails"
+  spec.add_development_dependency "noty-rails"
+  spec.add_development_dependency "therubyracer"
+  
 
 end

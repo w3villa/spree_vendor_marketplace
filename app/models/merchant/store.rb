@@ -125,9 +125,7 @@ module Merchant
       pickable_line_items.collect(&:order).uniq.flatten
     end
 
-    # searchable do 
-    #   latlon(:loctn) { Sunspot::Util::Coordinates.new(latitude, longitude) }
-    # end
+   
 
     def loctn
       [latitude, longitude].compact.join(", ")

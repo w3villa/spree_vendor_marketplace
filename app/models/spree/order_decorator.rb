@@ -12,12 +12,7 @@ module Spree
 
     # ---------------------------------------- Associations -----------------------------------------------------
 
-    searchable do
-      text :number
-      time :completed_at
-      text :state
-      float :total
-    end
+   
 
     after_update :notify_driver, :add_commission
 
