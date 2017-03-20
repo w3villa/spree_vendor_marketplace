@@ -56,8 +56,6 @@
                             td= line_item.variant.options_text
                             td= line_item.quantity
                             td= line_item.price.to_f
-                            td= line_item.delivery_type.try(:humanize)
-                            td= line_item.driver.try(:full_name) || "-"
               - else
                 tr
                   td colspan="6"

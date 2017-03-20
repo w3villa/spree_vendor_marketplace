@@ -17,9 +17,6 @@ class Merchant::StoresController < Merchant::ApplicationController
 	end
 
 	def show
-    # @products = @store.spree_products.page(params[:page]).per(12).order("created_at desc")
-    # p "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-    # p @products
 
     if params[:q].present? && params[:q][:search].present?
       @products =  Spree::Product.where("name LIKE ? AND store_id = ?","%#{params[:q][:search]}%",current_spree_user.stores.first.id).order("created_at desc").page(params[:page]).per(15)
@@ -101,13 +98,12 @@ class Merchant::StoresController < Merchant::ApplicationController
     if @store.id != current_spree_user.stores.first.try(:id) && !current_spree_user.has_spree_role?('admin')
       raise CanCan::AccessDenied.new
     end
-    respond_to do |format|
-      if @store.update_attributes(store_params)
-        format.html { redirect_to @store, notice: 'Store was successfully updated.'  }
-        # @store.email_tokens.last.update_attributes(is_valid: false)
-      else
-        format.html { render action: 'edit' }
-      end
+    if @store.update_attributes(store_params)
+      flash[:notice] = "Store updated successfully"
+      redirect_to @store
+    else
+      flash[:error] = "Error occurred while updating store"
+      render action: 'edit' 
     end
   end
 

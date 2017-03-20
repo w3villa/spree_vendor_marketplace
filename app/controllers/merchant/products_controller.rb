@@ -8,8 +8,6 @@ class Merchant::ProductsController < Merchant::ApplicationController
   layout 'merchant'
 
 	def index
-    p "______________________________________________________________________________________-"
-    p params
    
     if params[:q].present? && params[:q][:s].present?
       @collection =  Spree::Product.where("name LIKE ? AND store_id = ?","%#{params[:q][:s]}%",current_spree_user.stores.first.id).order("created_at desc").page(params[:page]).per(15)
@@ -45,16 +43,6 @@ class Merchant::ProductsController < Merchant::ApplicationController
     end
   end
 
-  def bulk_upload
-    row_array = Array.new
-    my_file = params[:file]
-    ImportProductWorker.perform_in(5.seconds, my_file.path, current_spree_user.email)
-    redirect_to merchant_products_path, notice: "Your product importing from the csv you uploaded, we will notify you it's progress through email"
-  end
-
-  def sample_csv
-    send_file(File.open(Rails.root.join("public", "sample_csv.csv"), "r"))
-  end
 
   def update
     redirect_path = params[:redirect_path].present? ? params[:redirect_path] : edit_merchant_product_path(@product)
