@@ -1,5 +1,6 @@
 module Merchant
-	class StoreSpreeUser < ActiveRecord::Base
+	class StoreUser < ActiveRecord::Base
+		self.table_name = "spree_user_stores" 
 		belongs_to :store, foreign_key: :store_id, class_name: 'Merchant::Store'
 		belongs_to :spree_user, foreign_key: :spree_user_id, class_name: 'Spree::User'
 		
