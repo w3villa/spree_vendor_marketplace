@@ -34,7 +34,7 @@ class Merchant::StoresController < Merchant::ApplicationController
           redirect_to current_spree_user.stores.first
         else
           @store = Merchant::Store.new()
-          @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
+          @taxons = Spree::Taxon.where(depth: 0, parent_id: Spree::Taxon.where(name: "Categories").first.id)
         end
       else
         redirect_to spree.root_path, notice: "you are not logged in"
@@ -51,7 +51,8 @@ class Merchant::StoresController < Merchant::ApplicationController
       raise CanCan::AccessDenied.new
     end
     # @taxons = Spree::Taxon.where(depth: 1, parent_id: Spree::Taxon.where(name: "Categories").first.id)
-    @taxons = Spree::Taxon.where(parent_id: nil)
+    # @taxons = Spree::Taxon.where(parent_id: nil)
+    @taxons = Spree::Taxon.where(depth: 0, parent_id: Spree::Taxon.where(name: "Categories").first.id)
   end
 
   # POST /stores
