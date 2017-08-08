@@ -20,7 +20,7 @@ $(document).ready(function() {
   Store.prototype = {
     init: function() {
       this.lastMarker = null;
-      this.showNoty();
+      // this.showNoty();
       this.bindAddLocation();
       this.previewMap();
       this.saveLocation();
