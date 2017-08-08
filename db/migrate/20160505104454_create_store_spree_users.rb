@@ -1,4 +1,4 @@
-class CreateStoreSpreeUsers < ActiveRecord::Migration
+class CreateStoreSpreeUsers < ActiveRecord::Migration[5.0]
   def change
     create_table :store_spree_users do |t|
       t.integer :spree_user_id

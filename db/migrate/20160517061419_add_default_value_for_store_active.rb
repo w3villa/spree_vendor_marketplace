@@ -1,4 +1,4 @@
-class AddDefaultValueForStoreActive < ActiveRecord::Migration
+class AddDefaultValueForStoreActive < ActiveRecord::Migration[5.0]
   def up
   	change_column :stores, :active, :boolean, default: false
   	add_column :stores, :slug, :string

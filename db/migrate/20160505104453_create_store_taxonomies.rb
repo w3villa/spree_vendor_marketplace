@@ -1,4 +1,4 @@
-class CreateStoreTaxonomies < ActiveRecord::Migration
+class CreateStoreTaxonomies < ActiveRecord::Migration[5.0]
   def change
     create_table :store_taxonomies do |t|
       t.integer :store_id

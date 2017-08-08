@@ -1,4 +1,4 @@
-class AddCertificateInStore < ActiveRecord::Migration
+class AddCertificateInStore < ActiveRecord::Migration[5.0]
   def change
     add_column :stores, :certificate_file_name, :string
     add_column :stores, :certificate_content_type, :string
