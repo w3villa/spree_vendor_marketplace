@@ -1,7 +1,8 @@
 module Spree
 	Api::V1::OptionTypesController.class_eval do 
 
-		skip_before_filter :authenticate_user, only: [:index]
+		# skip_before_filter :authenticate_user, only: [:index]
+		skip_before_action :authenticate_user, only: [:index]
 
 		def index
 			if current_spree_user.has_spree_role?("merchant")
