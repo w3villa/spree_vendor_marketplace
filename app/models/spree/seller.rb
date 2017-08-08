@@ -3,8 +3,8 @@ module Spree
 
 		self.table_name = "spree_users"
 		has_many :payment_histories, foreign_key: :user_id, class_name: "Spree::PaymentHistory"
-		has_many :store_users, foreign_key: :spree_user_id, class_name: 'Merchant::StoreUser'
-  	has_many :stores, through: :store_users, class_name: 'Merchant::Store'
+		has_many :store_spree_users, foreign_key: :spree_user_id, class_name: 'Merchant::StoreUser'
+  	has_many :stores, through: :store_spree_users, class_name: 'Merchant::Store'
 
 		before_destroy :notify_store_destroy, :destroy_store
 
