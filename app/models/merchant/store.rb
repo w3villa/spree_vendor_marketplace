@@ -1,8 +1,6 @@
 module Merchant
   class Store < ActiveRecord::Base
 
-    self.table_name = "pyklocal_stores" 
-
     before_destroy :deactive_store_products
 
     validates :name, :manager_first_name, :manager_last_name, :phone_number, presence: true

@@ -222,7 +222,7 @@ module Spree
 				start_date = Date.strptime(start_date, "%m/%d/%Y")
 				end_date  =  Date.strptime(end_date, "%m/%d/%Y")
 
-				header = 'Store Name, Total sales amount, Total sales tax , total discount earned by PYKLOCAL, Delivery charges adjustments , Total Net Pay to the store'
+				header = 'Store Name, Total sales amount, Total sales tax , total discount earned by Store, Delivery charges adjustments , Total Net Pay to the store'
 				file_name = "Store_order_details#{Date.today}.csv"
 				File.open(file_name, "w") do |writer|
 					writer << header
