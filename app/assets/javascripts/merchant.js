@@ -1,11 +1,11 @@
 //= require jquery.raty.js
 
 
-$.ajaxSetup({
-  headers: {
-    'X-Spree-Token': $('meta[name="csrf-token"]').attr('content')
-  }
-});
+// $.ajaxSetup({
+//   headers: {
+//     'X-Spree-Token': $('meta[name="csrf-token"]').attr('content')
+//   }
+// });
 
 
  window.onload = function () {
