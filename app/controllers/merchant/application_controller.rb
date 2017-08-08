@@ -1,6 +1,5 @@
 class Merchant::ApplicationController < ActionController::Base
-  
-	before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   protect_from_forgery with: :exception
 	
@@ -17,7 +16,7 @@ class Merchant::ApplicationController < ActionController::Base
   helper Spree::StoreHelper
   helper Spree::TaxonsHelper
 
-  before_filter :load_initials
+  before_action :load_initials
 
   layout 'merchant'
 

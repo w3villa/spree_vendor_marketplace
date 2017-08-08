@@ -1,7 +1,7 @@
 class Merchant::ProductPropertiesController < Merchant::ApplicationController
 
-	before_filter :find_product_properties, only: [:edit, :update, :destroy]
-	before_filter :load_product
+	before_action :find_product_properties, only: [:edit, :update, :destroy]
+	before_action :load_product
 
 	def index
 		@properties = Spree::Property.pluck(:name)

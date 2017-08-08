@@ -1,7 +1,7 @@
 class Merchant::StockItemsController < Merchant::ApplicationController
 
 	layout 'merchant'
-	before_filter :find_stock_item, only: [:edit, :update, :destroy]
+	before_action :find_stock_item, only: [:edit, :update, :destroy]
 
 	def new
 		@stock = Spree::StockItem.new

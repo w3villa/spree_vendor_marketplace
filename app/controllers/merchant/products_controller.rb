@@ -1,9 +1,9 @@
 class Merchant::ProductsController < Merchant::ApplicationController
 
   # alias_method :old_stock, :stock
-  before_filter :is_active_store
-  before_filter :verify_access_for_merchants, only: [:new, :index, :stock]
-  before_filter :find_product, only: [:edit, :update, :destroy, :images, :product_properties, :stock]
+  before_action :is_active_store
+  before_action :verify_access_for_merchants, only: [:new, :index, :stock]
+  before_action :find_product, only: [:edit, :update, :destroy, :images, :product_properties, :stock]
 
   layout 'merchant'
 

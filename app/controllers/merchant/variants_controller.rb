@@ -2,8 +2,8 @@ class Merchant::VariantsController < Merchant::ApplicationController
 
 	layout 'merchant'
 
-	before_filter :find_variant, only: [:edit, :update, :destroy]
-	before_filter :load_product
+	before_action :find_variant, only: [:edit, :update, :destroy]
+	before_action :load_product
 
 	def index
 		@variants = @product.try(:variants)

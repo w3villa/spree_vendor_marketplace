@@ -1,7 +1,7 @@
 module Spree
 	class Admin::SellersController < Admin::ResourceController
 
-    before_filter :find_seller, only: [:edit, :update, :delete, :stores, :store_orders, :delete_store]
+    before_action :find_seller, only: [:edit, :update, :delete, :stores, :store_orders, :delete_store]
 
 		def index
 			respond_with(@collection) do |format|

@@ -1,7 +1,7 @@
 class Merchant::OrdersController < Merchant::ApplicationController
 
-	before_filter :is_active_store
-  before_filter :find_order, only: [:edit, :update, :validate_actions, :customer, :adjustments, :payments, :returns, :approve, :cancel, :return_item_accept, :return_item_reject]
+	before_action :is_active_store
+  before_action :find_order, only: [:edit, :update, :validate_actions, :customer, :adjustments, :payments, :returns, :approve, :cancel, :return_item_accept, :return_item_reject]
 
 	def index
     @store = current_spree_user.stores.first
