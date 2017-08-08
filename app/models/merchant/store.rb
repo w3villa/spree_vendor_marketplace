@@ -5,7 +5,7 @@ module Merchant
 
     validates :name, :manager_first_name, :manager_last_name, :phone_number, presence: true
     
-  	has_many :store_spree_users, dependent: :delete_all, foreign_key: :store_id, class_name: "Merchant::StoreUser"
+  	has_many :store_spree_users, dependent: :delete_all, foreign_key: :store_id, class_name: "Merchant::StoreSpreeUser"
     has_many :spree_users, through: :store_spree_users
     has_many :store_taxons, dependent: :delete_all, foreign_key: :store_id, class_name: "Merchant::StoreTaxon"
     has_many :spree_taxons , through: :store_taxons
